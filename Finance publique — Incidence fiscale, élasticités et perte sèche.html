@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Finance publique — Incidence fiscale, élasticités et perte sèche</title>
+<style>
+/* ===== Jetons de design ===== */
+:root{
+  --navy:#0e1b33;--navy2:#1a2f55;--paper:#f6f5f1;--card:#fff;--line:#e0ddd3;
+  --ink:#16233b;--muted:#617088;--blue:#2c5a9e;--green:#3e7f61;--gold:#b08a2e;--brick:#a4543f;
+  --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sans:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.6 var(--sans)}
+h1,h2,h3{font-family:var(--serif);font-weight:600;margin:0;letter-spacing:-.01em}
+h2{font-size:24px;margin-bottom:6px}h3{font-size:17px;margin-bottom:6px}
+p{margin:0 0 10px}sub{font-size:.72em;line-height:0}
+.wrap{max-width:1180px;margin:auto;padding:0 20px}
+.muted{color:var(--muted);font-size:13px}
+/* En-tête */
+.hero{background:var(--navy);color:#fff;padding:40px 0 34px;border-bottom:3px solid var(--gold)}
+.hero .session{font-size:13px;color:#c9d6ee;margin-bottom:14px}
+.hero h1{font-size:clamp(28px,5vw,44px);line-height:1.1}
+.hero .sub{font-family:var(--serif);font-size:clamp(17px,2.4vw,22px);color:#e6d7a8;margin:8px 0 14px}
+.hero p.obj{max-width:720px;color:#cfd9ec;margin:0}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.badge{border:1px solid #3b5282;border-radius:999px;padding:4px 12px;font-size:12px;color:#d6e0f3}
+/* Navigation */
+nav{position:sticky;top:0;z-index:20;background:rgba(246,245,241,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav a{white-space:nowrap;padding:14px 14px 12px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:600;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+nav a:hover{color:var(--ink)}nav a.on{color:var(--navy);border-color:var(--gold)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+/* Sections et cartes */
+section{padding:44px 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 1px 2px rgba(14,27,51,.05),0 6px 18px rgba(14,27,51,.04);padding:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:18px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+.grid3 p,.grid2 p{font-size:14px;color:#44536b}
+/* Simulateur */
+.lab{display:grid;grid-template-columns:310px minmax(0,1fr);gap:16px;margin-top:18px;align-items:start}
+.controls{position:sticky;top:64px}
+.ctl{padding:14px 0;border-top:1px solid var(--line)}.ctl:first-of-type{border-top:0;padding-top:4px}
+.ctl-head{display:flex;justify-content:space-between;align-items:baseline;font-weight:600;font-size:14px}
+.ctl output{font-family:var(--serif);font-size:20px;color:var(--blue);font-variant-numeric:tabular-nums}
+.ends{display:flex;justify-content:space-between;font-size:11px;color:#8a95a8}
+.hint{font-size:12px;color:var(--muted);margin:6px 0 0}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;margin:14px 0 6px;cursor:pointer;background:linear-gradient(to right,var(--blue) var(--pct,50%),#dfe4ec var(--pct,50%))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid var(--blue);box-shadow:0 1px 4px rgba(14,27,51,.25)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid var(--blue)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+button{font:inherit;font-size:13px;font-weight:600;border-radius:8px;padding:9px 14px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);transition:background .15s,border-color .15s}
+button:hover{border-color:#b9b5a6;background:#faf9f5}
+button.pri{background:var(--navy);border-color:var(--navy);color:#fff}button.pri:hover{background:var(--navy2)}
+button.gold{background:#f6efd9;border-color:#e2d3a2;color:#6b5314}
+.chart-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);margin:8px 0 2px}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.legend i.box{height:10px;width:12px;border-radius:2px}
+#chartBox{position:relative;margin-top:6px}
+svg{display:block;width:100%;overflow:hidden;touch-action:pan-y}
+svg text{font-family:var(--sans)}
+#tip{position:absolute;pointer-events:none;background:var(--navy);color:#fff;font-size:12px;line-height:1.4;padding:7px 10px;border-radius:6px;max-width:230px;opacity:0;transition:opacity .12s;z-index:5}
+.lecture{background:#f3f1e8;border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:12px 14px;font-size:13.5px;margin-top:10px;color:#3a4860}
+/* Tableau de bord */
+.dash{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.m{padding:16px;border-top:3px solid var(--c,var(--line))}
+.m .l{font-size:13px;color:var(--muted);font-weight:600}
+.m .n{font-family:var(--serif);font-size:28px;font-weight:600;line-height:1.2;margin-top:2px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.m .d{font-size:12px;color:var(--muted);margin-top:2px}
+.up{color:#8a6a14}.dn{color:var(--brick)}
+.m.wide{grid-column:span 3}
+.bar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin:10px 0 8px;background:#e8e6dc}
+.bar span{transition:width .25s ease}
+.row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13.5px}
+.eq{background:#f6f5f1;border:1px solid var(--line);border-radius:8px;padding:12px 14px;font:13px/1.9 ui-monospace,Consolas,monospace;color:#2c3c58;overflow-wrap:anywhere}
+.ok{color:var(--green);font-weight:700}.ko{color:var(--brick);font-weight:700}
+ul.chk{list-style:none;margin:8px 0 0;padding:0;font-size:13.5px}ul.chk li{padding:4px 0;border-top:1px solid var(--line)}
+/* Vérification */
+.q{border-top:1px solid var(--line);padding:16px 0}.q:first-of-type{border-top:0}
+.q label.o{display:block;padding:8px 10px;border:1px solid var(--line);border-radius:8px;margin-top:6px;cursor:pointer;font-size:14px}
+.q label.o:hover{background:#faf9f5}
+select,textarea{font:inherit;width:100%;border:1px solid #cfcbbd;border-radius:8px;padding:9px;background:#fff;color:var(--ink);margin-top:6px}
+textarea{min-height:80px;resize:vertical}
+.fb{display:none;margin-top:10px;padding:11px 13px;border-radius:8px;font-size:13.5px}
+.fb.good{background:#e8f2ec;color:#23573f}.fb.warn{background:#f6efd9;color:#6b5314}
+footer{text-align:center;color:#8a95a8;font-size:12px;padding:34px 20px 40px}
+@media(max-width:960px){.lab{grid-template-columns:1fr}.controls{position:static}.grid3{grid-template-columns:1fr}}
+@media(max-width:620px){.wrap{padding:0 14px}.grid2{grid-template-columns:1fr}.dash{grid-template-columns:repeat(2,minmax(0,1fr))}.m.wide{grid-column:span 2}.m .n{font-size:22px}.card{padding:15px}section{padding-top:34px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+.rep h3{margin-top:22px;padding-top:14px;border-top:1px solid var(--line)}.rep h3:first-of-type{margin-top:6px;border-top:0;padding-top:0}
+.rep .qq{margin:14px 0 0;font-weight:600;font-size:14px}.rep textarea{min-height:60px;line-height:1.55;overflow:hidden}
+.saved{font-size:12px;color:var(--green);margin-left:6px;opacity:0;transition:opacity .3s}.saved.on{opacity:1}
+@media print{nav,.hero .badges,.btns,.controls,.lab,#simulateur,#intro,#cours,#analyse,#experiences,#verification,#limites,footer{display:none!important}.rep textarea{border:0;padding:0}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <div class="session">Séance interactive d'économie publique : taxe unitaire sur un marché concurrentiel</div>
+  <h1>Finance publique</h1>
+  <div class="sub">Incidence fiscale, élasticités et perte sèche</div>
+  <p class="obj">Objectif de la séance : comprendre qui supporte réellement une taxe, pourquoi cela dépend de la sensibilité relative de l'offre et de la demande au prix, et comment la taxe détruit une partie du surplus collectif.</p>
+  <div class="badges"><span class="badge">Équilibre partiel</span><span class="badge">Concurrence parfaite</span><span class="badge">Fonctions linéaires</span><span class="badge">Équilibre initial : P₀ = 20 €, Q₀ = 60</span></div>
+</div></header>
+<nav aria-label="Navigation principale"><div class="wrap">
+  <a href="#intro">Introduction</a><a href="#cours">Cours</a><a href="#simulateur">Simulateur</a><a href="#analyse">Analyse économique</a><a href="#experiences">Expériences</a><a href="#verification">Vérification des connaissances</a><a href="#reponses">Mes réponses</a><a href="#limites">Limites</a>
+</div></nav>
+<main class="wrap">
+
+<section id="intro">
+  <h2>Introduction</h2>
+  <p class="muted">Trois idées à garder en tête avant de manipuler le simulateur.</p>
+  <div class="grid3">
+    <div class="card"><h3>Le coin fiscal</h3><p>Une taxe unitaire t sépare le prix payé par l'acheteur du prix net reçu par le vendeur : P<sub>c</sub> = P<sub>p</sub> + t. Quel que soit le redevable légal, ce coin est identique.</p></div>
+    <div class="card"><h3>L'incidence</h3><p>La charge se répartit selon les sensibilités au prix. Le côté du marché qui s'adapte le moins facilement supporte la plus grande part de la taxe.</p></div>
+    <div class="card"><h3>La perte sèche</h3><p>La taxe réduit la quantité échangée. Les échanges mutuellement avantageux qui disparaissent forment un triangle de surplus perdu, sans contrepartie en recettes.</p></div>
+  </div>
+</section>
+
+<section id="cours">
+  <h2>Cours</h2>
+  <p class="muted">Rappel synthétique. Exemple fil rouge : Q<sub>D</sub> = 60 + 2(20 − P<sub>c</sub>), Q<sub>O</sub> = 60 + 2(P<sub>p</sub> − 20), t = 10 €. Hypothèses : concurrence, équilibre partiel, taxe unitaire, pas d'externalités, agents rationnels.</p>
+  <div class="grid2">
+    <div class="card"><h3>Incidence légale et économique</h3><p>L'incidence légale désigne qui verse la taxe. L'incidence économique désigne qui en supporte réellement le coût après ajustement des prix. Le coin fiscal est le même quel que soit le redevable : P<sub>c</sub> = P<sub>p</sub> + t.</p><p>Exemple : P<sub>c</sub> = 25 €, P<sub>p</sub> = 15 €, Q<sub>t</sub> = 50.</p></div>
+    <div class="card"><h3>Élasticités et répartition</h3><p>Le côté le moins élastique supporte la plus grande part. Part des consommateurs = E<sub>O</sub> / (E<sub>O</sub> + |E<sub>D</sub>|) = b / (a + b) ; part des producteurs = |E<sub>D</sub>| / (E<sub>O</sub> + |E<sub>D</sub>|). Pour des courbes non linéaires, cette formule n'est qu'une approximation pour de petites taxes.</p></div>
+    <div class="card"><h3>Surplus et recettes</h3><p>Les deux surplus diminuent. Dans l'exemple, chacun passe de 900 à 625, soit −550 au total, alors que les recettes valent 10 × 50 = 500.</p><p>La différence, 50, n'est récupérée par personne.</p></div>
+    <div class="card"><h3>Perte sèche</h3><p>C'est le triangle (Q<sub>t</sub>, P<sub>c</sub>), (Q<sub>t</sub>, P<sub>p</sub>), (Q₀, P₀) : les échanges avantageux qui disparaissent. DWL = ½ t (Q₀ − Q<sub>t</sub>) = ½ × [ab / (a + b)] × t². Elle croît comme t² et dépend de la sensibilité conjointe de l'offre et de la demande, pas de la répartition.</p></div>
+  </div>
+  <div class="card" style="margin-top:16px"><h3>Ce qui est général et ce qui dépend du modèle</h3>
+    <p><b>Général :</b> l'incidence économique est indépendante de l'incidence légale ; le côté le moins élastique supporte davantage ; la perte sèche est positive et croît plus vite que la taxe.</p>
+    <p style="margin:0"><b>Lié aux hypothèses :</b> les valeurs exactes (75 %, 50…) supposent des courbes linéaires, la concurrence, un seul marché et aucune externalité.</p></div>
+</section>
+
+<section id="simulateur">
+  <h2>Simulateur</h2>
+  <p class="muted">Déplacez les curseurs : le graphique, les indicateurs et les contrôles se recalculent instantanément.</p>
+  <div class="lab">
+    <aside class="card controls" aria-label="Paramètres">
+      <h3>Paramètres du marché</h3>
+      <div class="ctl"><div class="ctl-head"><label for="tax">Taxe unitaire (t)</label><output id="taxOut" for="tax"></output></div>
+        <input id="tax" type="range" min="0" max="20" step=".5" value="10"><div class="ends"><span>0 €</span><span>20 €</span></div>
+        <p class="hint">Montant prélevé par unité échangée.</p></div>
+      <div class="ctl"><div class="ctl-head"><label for="demand">Sensibilité de la demande (a)</label><output id="dOut" for="demand"></output></div>
+        <input id="demand" type="range" min=".5" max="5" step=".1" value="2"><div class="ends"><span>0,5 faible</span><span>5 forte</span></div>
+        <p class="hint">Dans Q<sub>D</sub> = 60 + a(20 − P<sub>c</sub>), a mesure la réaction de la quantité demandée au prix.</p></div>
+      <div class="ctl"><div class="ctl-head"><label for="supply">Sensibilité de l'offre (b)</label><output id="sOut" for="supply"></output></div>
+        <input id="supply" type="range" min=".5" max="5" step=".1" value="2"><div class="ends"><span>0,5 faible</span><span>5 forte</span></div>
+        <p class="hint">Dans Q<sub>O</sub> = 60 + b(P<sub>p</sub> − 20), b mesure la réaction de la quantité offerte au prix net reçu.</p></div>
+      <div class="btns"><button class="pri" id="reset">Réinitialiser</button><button class="gold" id="presetA">Préparer l'expérience A</button></div>
+      <p class="hint">Le bouton « Expérience A » règle t = 10 €, a = 1 et b = 3.</p>
+    </aside>
+    <div>
+      <div class="card">
+        <div class="chart-head"><div><h3>Équilibre du marché</h3><span class="muted">Prix en ordonnée, quantité en abscisse. Survolez ou touchez les éléments pour les détails.</span></div></div>
+        <div class="legend">
+          <span><i style="background:var(--blue)"></i>Demande</span><span><i style="background:var(--green)"></i>Offre</span>
+          <span><i style="background:repeating-linear-gradient(90deg,var(--gold) 0 6px,transparent 6px 10px)"></i>Offre après taxe</span>
+          <span><i class="box" style="background:rgba(176,138,46,.25);border:1px solid var(--gold)"></i>Recettes fiscales</span>
+          <span><i class="box" style="background:rgba(164,84,63,.4)"></i>Perte sèche</span>
+        </div>
+        <div id="chartBox"><svg id="chart" role="img" aria-label="Graphique de l'offre, de la demande et de la taxe"></svg><div id="tip" role="tooltip"></div></div>
+        <div class="lecture" id="lecture" aria-live="polite"></div>
+      </div>
+      <div class="dash" aria-label="Tableau de bord économique">
+        <div class="card m" style="--c:var(--blue)"><div class="l">Prix payé par les consommateurs (P<sub>c</sub>)</div><div class="n" id="pc"></div><div class="d" id="dpc"></div></div>
+        <div class="card m" style="--c:var(--green)"><div class="l">Prix reçu par les producteurs (P<sub>p</sub>)</div><div class="n" id="pp"></div><div class="d" id="dpp"></div></div>
+        <div class="card m" style="--c:var(--navy)"><div class="l">Quantité échangée (Q<sub>t</sub>)</div><div class="n" id="qt"></div><div class="d" id="dqt"></div></div>
+        <div class="card m" style="--c:var(--gold)"><div class="l">Recettes fiscales</div><div class="n" id="revenue"></div><div class="d">t × Q<sub>t</sub></div></div>
+        <div class="card m" style="--c:var(--brick)"><div class="l">Perte sèche</div><div class="n" id="dwl"></div><div class="d" id="dwlSub"></div></div>
+        <div class="card m" style="--c:var(--line)"><div class="l">Quantité non échangée</div><div class="n" id="lostq"></div><div class="d">Q₀ − Q<sub>t</sub></div></div>
+        <div class="card m wide" style="--c:var(--gold)"><div class="l">Répartition de la charge fiscale</div>
+          <div class="bar"><span id="consumerBar" style="background:var(--blue)"></span><span id="producerBar" style="background:var(--green)"></span></div>
+          <div class="row"><span><b style="color:var(--blue)">Consommateurs</b> <strong id="consumerShare"></strong> <span class="muted" id="cUnit"></span></span><span><b style="color:var(--green)">Producteurs</b> <strong id="producerShare"></strong> <span class="muted" id="pUnit"></span></span></div>
+          <div class="d" id="incidenceText" style="margin-top:6px"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="analyse">
+  <h2>Analyse économique</h2>
+  <p class="muted">Le modèle, ses équations et les contrôles de cohérence appliqués aux valeurs courantes.</p>
+  <div class="grid2">
+    <div class="card"><h3>Élasticités au point initial</h3>
+      <div class="row"><span>Demande (valeur absolue)</span><strong id="ed"></strong></div>
+      <div class="row"><span>Offre</span><strong id="eo"></strong></div>
+      <p style="margin-top:10px;font-size:14px;color:#44536b">L'élasticité rapporte une variation en pourcentage de la quantité à une variation en pourcentage du prix. La pente, elle, mesure une variation en unités. La part supportée par les consommateurs vaut E<sub>O</sub> / (E<sub>O</sub> + |E<sub>D</sub>|) = b / (a + b).</p>
+      <div class="eq">|E<sub>D</sub>| = a × P₀ / Q₀<br>E<sub>O</sub> = b × P₀ / Q₀</div></div>
+    <div class="card"><h3>Les équations utilisées</h3>
+      <p style="font-size:14px;color:#44536b">Le modèle maintient l'équilibre initial à 60 unités et 20 €, même lorsque les sensibilités changent.</p>
+      <div class="eq" id="equations"></div>
+      <p class="hint" style="margin-top:10px">Perte sèche : ½ × t × (Q₀ − Q<sub>t</sub>) = ½ × [ab / (a + b)] × t². Elle croît avec le carré de la taxe. Hypothèses : concurrence, équilibre partiel, aucune externalité.</p></div>
+  </div>
+  <div class="card" style="margin-top:16px"><h3>Contrôles de cohérence</h3><p class="muted" style="margin:0">Vérifiés à chaque mise à jour, avec une tolérance de 10⁻⁹.</p><ul class="chk" id="checks"></ul></div>
+</section>
+
+<section id="experiences">
+  <h2>Expériences</h2>
+  <p class="muted">Chaque expérience règle les curseurs et vous ramène au simulateur. Formulez une prédiction avant de regarder le résultat.</p>
+  <div class="grid2">
+    <div class="card"><h3>Expérience A : demande peu sensible au prix</h3><p>t = 10 €, a = 1, b = 3. La demande réagit peu, l'offre réagit beaucoup. Qui supporte l'essentiel de la taxe ?</p><div class="btns"><button class="gold" data-p="10,1,3">Lancer l'expérience A</button></div></div>
+    <div class="card"><h3>Expérience B : offre peu sensible au prix</h3><p>t = 10 €, a = 3, b = 1. Les rôles sont inversés. Comparez la répartition avec l'expérience A.</p><div class="btns"><button class="gold" data-p="10,3,1">Lancer l'expérience B</button></div></div>
+    <div class="card"><h3>Expérience C : doubler la taxe</h3><p>Passez de t = 5 € à t = 10 € avec a = b = 2. Notez la perte sèche dans chaque cas.</p><div class="btns"><button data-p="5,2,2">t = 5 €</button><button class="gold" data-p="10,2,2">t = 10 €</button></div></div>
+    <div class="card"><h3>Expérience D : marché très sensible</h3><p>t = 10 €, a = 5, b = 5. Les deux côtés réagissent fortement : observez la quantité perdue.</p><div class="btns"><button class="gold" data-p="10,5,5">Lancer l'expérience D</button></div></div>
+  </div>
+</section>
+
+<section id="verification">
+  <h2>Vérification des connaissances</h2>
+  <p class="muted">Testez votre compréhension, puis vérifiez avec le simulateur.</p>
+  <div class="card" style="margin-top:16px">
+    <div class="q"><label for="prediction"><b>Expérience A.</b> Avec une taxe de 10 €, a = 1 et b = 3, qui supportera la plus grande part de la taxe ?</label>
+      <select id="prediction"><option value="">Choisissez une réponse…</option><option value="consumers">Les consommateurs</option><option value="producers">Les producteurs</option><option value="equal">Les deux à parts égales</option></select>
+      <label for="reason" style="display:block;margin-top:12px">Expliquez votre raisonnement.</label>
+      <textarea id="reason" placeholder="Je pense que… parce que…"></textarea>
+      <div class="btns"><button class="pri" id="check">Vérifier ma prédiction</button></div><div class="fb" id="feedback" aria-live="polite"></div></div>
+    <div id="quiz"></div>
+  </div>
+</section>
+
+<section id="reponses">
+  <h2>Mes réponses</h2>
+  <p class="muted">Questions des expériences et de l'étape 4, avec vos réponses. Modifiez-les directement : elles sont enregistrées automatiquement dans ce navigateur<span class="saved" id="saved">Enregistré</span>.</p>
+  <div class="card rep" style="margin-top:16px">
+    <div id="repBox"></div>
+    <div class="btns"><button class="pri" id="repExport">Exporter en .txt</button><button id="repPrint">Imprimer / PDF</button><button id="repReset">Rétablir mes réponses d'origine</button></div>
+  </div>
+</section>
+
+<section id="limites">
+  <h2>Limites de l'analyse</h2>
+  <p class="muted">Ce que le modèle ne dit pas.</p>
+  <div class="grid2">
+    <div class="card"><h3>Court terme et long terme</h3><p>Les élasticités sont plus faibles à court terme (capacités, contrats, habitudes) et plus fortes à long terme. La répartition de la charge et la perte sèche évoluent donc avec l'horizon.</p></div>
+    <div class="card"><h3>Plusieurs marchés</h3><p>Une taxe déplace la demande vers des substituts et pèse sur les compléments. La charge peut finalement tomber sur les salariés, les propriétaires du capital ou d'autres marchés, ce que l'équilibre partiel ne voit pas.</p></div>
+    <div class="card"><h3>La perte sèche ne suffit pas</h3><p>Elle mesure un coût d'efficacité, pas la justice de la répartition ni les bénéfices de la dépense publique. Une taxe peu coûteuse en efficacité peut peser sur les ménages modestes.</p></div>
+    <div class="card"><h3>Objectifs publics</h3><p>Redistribution, externalités et usage des recettes modifient le jugement. Une taxe pigouvienne bien calibrée peut réduire une perte sociale existante, et les recettes peuvent financer des biens publics de valeur supérieure.</p></div>
+  </div>
+</section>
+</main>
+<footer>Outil pédagogique : modèle théorique simplifié. Les résultats ne constituent pas une estimation empirique d'un marché réel.</footer>
+
+<script>
+/* =====================================================================
+   1. MODÈLE ÉCONOMIQUE (logique inchangée par rapport au fichier d'origine)
+   Qd = 60 + a(20 − Pc) ; Qo = 60 + b(Pp − 20) ; Pc = Pp + t
+   ===================================================================== */
+const P0 = 20, Q0 = 60;
+const Econ = {
+  demandQ: (p, a) => Q0 + a * (P0 - p),
+  supplyQ: (p, b) => Q0 + b * (p - P0),
+  demandP: (q, a) => P0 + (Q0 - q) / a,      // demande inverse
+  supplyP: (q, b) => P0 + (q - Q0) / b,      // offre inverse
+  solve(t, a, b) {
+    const sc = b / (a + b), sp = a / (a + b);
+    const pc = P0 + sc * t, pp = P0 - sp * t, qt = Q0 - (a * b / (a + b)) * t;
+    return { t, a, b, sc, sp, pc, pp, qt, rev: t * qt, lost: Q0 - qt,
+             dwl: 0.5 * t * (Q0 - qt), ed: a * P0 / Q0, es: b * P0 / Q0 };
+  },
+  /* Contrôles indépendants des formules de résolution */
+  checks(m) {
+    const e = 1e-9, ab = Math.abs;
+    return [
+      ['Prix consommateur = prix producteur + taxe', ab(m.pc - (m.pp + m.t)) < e],
+      ['Offre = demande après taxe : Q<sub>D</sub>(P<sub>c</sub>) = Q<sub>O</sub>(P<sub>p</sub>) = Q<sub>t</sub>', ab(this.demandQ(m.pc, m.a) - this.supplyQ(m.pp, m.b)) < e && ab(this.demandQ(m.pc, m.a) - m.qt) < e],
+      ['Recettes = t × Q<sub>t</sub> = aire du rectangle (P<sub>c</sub> − P<sub>p</sub>) × Q<sub>t</sub>', ab(m.rev - (m.pc - m.pp) * m.qt) < e],
+      ['Perte sèche = aire du triangle = ½ × [ab/(a+b)] × t²', ab(m.dwl - 0.5 * (m.a * m.b / (m.a + m.b)) * m.t * m.t) < e],
+      ['Parts consommateurs + producteurs = 100 %', ab(m.sc + m.sp - 1) < e && ab(m.sc * m.t - (m.pc - P0)) < e]
+    ];
+  }
+};
+
+/* =====================================================================
+   2. PRÉSENTATION
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+const nf = (n, d = 2) => n.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
+const fmt = n => nf(n), eur = n => nf(n) + ' €', pct = n => nf(n, 1) + ' %';
+const sgn = (n, u) => (n > 1e-9 ? '+' : n < -1e-9 ? '−' : '±') + nf(Math.abs(n)) + u;
+const NS = 'http://www.w3.org/2000/svg';
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function el(tag, attrs, parent, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text !== undefined) e.textContent = text;
+  parent.appendChild(e); return e;
+}
+/* Texte SVG avec indice : P<sub>c</sub> */
+function stext(parent, x, y, base, subs, attrs) {
+  const t = el('text', Object.assign({ x, y }, attrs), parent, base);
+  if (subs) el('tspan', { 'baseline-shift': 'sub', 'font-size': '0.72em' }, t, subs);
+  return t;
+}
+const C = { blue: '#2c5a9e', green: '#3e7f61', gold: '#b08a2e', brick: '#a4543f', ink: '#16233b', axis: '#617088' };
+
+/* --- Graphique --- */
+function lineSeg(p0, s) {            // droite P = p0 + s·Q, rognée à Q∈[0,100], P∈[0,60]
+  const qa = (0 - p0) / s, qb = (60 - p0) / s;
+  const lo = Math.max(0, Math.min(qa, qb)), hi = Math.min(100, Math.max(qa, qb));
+  return [lo, p0 + s * lo, hi, p0 + s * hi];
+}
+function draw(m) {
+  const box = $('chartBox'), svg = $('chart');
+  const W = Math.max(280, box.clientWidth), H = Math.round(Math.max(320, Math.min(500, W * 0.62)));
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('height', H); svg.replaceChildren();
+  const L = 48, R = W - 14, T = 12, B = H - 42;
+  const x = q => L + q / 100 * (R - L), y = p => B - p / 60 * (B - T);
+  const g = el('g', {}, svg);
+  for (let p = 0; p <= 60; p += 10) { el('line', { x1: L, x2: R, y1: y(p), y2: y(p), stroke: '#e6e3d9' }, g); el('text', { x: L - 8, y: y(p) + 4, 'text-anchor': 'end', 'font-size': 11, fill: C.axis }, g, p); }
+  for (let q = 0; q <= 100; q += 10) { el('line', { x1: x(q), x2: x(q), y1: T, y2: B, stroke: '#eeebe2' }, g); if (q % 20 === 0 || W > 520) el('text', { x: x(q), y: B + 17, 'text-anchor': 'middle', 'font-size': 11, fill: C.axis }, g, q); }
+  el('line', { x1: L, x2: L, y1: T, y2: B, stroke: C.axis, 'stroke-width': 1.4 }, g);
+  el('line', { x1: L, x2: R, y1: B, y2: B, stroke: C.axis, 'stroke-width': 1.4 }, g);
+  el('text', { x: (L + R) / 2, y: H - 6, 'text-anchor': 'middle', 'font-size': 12, fill: C.ink }, g, 'Quantité échangée (unités)');
+  el('text', { transform: `translate(13 ${(T + B) / 2}) rotate(-90)`, 'text-anchor': 'middle', 'font-size': 12, fill: C.ink }, g, 'Prix (€)');
+
+  const { t, a, b, pc, pp, qt } = m;
+  const tip = (node, html) => { node.setAttribute('data-tip', html); return node; };
+  const areas = el('g', {}, svg);
+  if (t > 0) {
+    // Recettes fiscales : rectangle [0,Qt] × [Pp,Pc], scindé au prix initial P0 (part consommateurs / producteurs)
+    tip(el('rect', { x: x(0), y: y(pc), width: x(qt) - x(0), height: y(P0) - y(pc), fill: C.blue, opacity: .16 }, areas), `<b>Recettes fiscales</b><br>${eur(m.rev)} = ${eur(t)} × ${fmt(qt)}<br>Part payée par les consommateurs`);
+    tip(el('rect', { x: x(0), y: y(P0), width: x(qt) - x(0), height: y(pp) - y(P0), fill: C.green, opacity: .16 }, areas), `<b>Recettes fiscales</b><br>${eur(m.rev)} = ${eur(t)} × ${fmt(qt)}<br>Part supportée par les producteurs`);
+    el('rect', { x: x(0), y: y(pc), width: x(qt) - x(0), height: y(pp) - y(pc), fill: 'none', stroke: C.gold, 'stroke-width': 1.5, 'pointer-events': 'none' }, areas);
+    // Perte sèche : triangle (Qt,Pc) (Qt,Pp) (Q0,P0)
+    tip(el('polygon', { points: `${x(qt)},${y(pc)} ${x(qt)},${y(pp)} ${x(Q0)},${y(P0)}`, fill: C.brick, opacity: .42 }, areas), `<b>Perte sèche</b><br>${eur(m.dwl)} = ½ × ${eur(t)} × ${fmt(m.lost)}`);
+  }
+  // Courbes (rognées exactement aux bornes du graphique, sans déformation de pente)
+  const curve = (p0, s, color, w, dash, html) => {
+    const [q1, p1, q2, p2] = lineSeg(p0, s), d = `M${x(q1)} ${y(p1)} L${x(q2)} ${y(p2)}`;
+    el('path', { d, fill: 'none', stroke: color, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-dasharray': dash || 'none', 'pointer-events': 'none' }, svg);
+    tip(el('path', { d, fill: 'none', stroke: 'transparent', 'stroke-width': 14 }, svg), html);
+    return [q2, p2];
+  };
+  const dEnd = curve(P0 + Q0 / a, -1 / a, C.blue, 3, null, `<b>Demande</b><br>Q<sub>D</sub> = 60 + ${fmt(a)}(20 − P)`);
+  const sEnd = curve(P0 - Q0 / b, 1 / b, C.green, 3, null, `<b>Offre</b><br>Q<sub>O</sub> = 60 + ${fmt(b)}(P − 20)`);
+  const tEnd = curve(P0 - Q0 / b + t, 1 / b, C.gold, 2.6, '8 6', `<b>Offre après taxe</b><br>Offre décalée vers le haut de ${eur(t)}`);
+  const tag = (pt, txt, sub, col, dy) => stext(svg, Math.min(x(pt[0]), R - 4), y(pt[1]) + dy, txt, sub, { 'text-anchor': 'end', 'font-size': 12, 'font-weight': 700, fill: col, stroke: '#fff', 'stroke-width': 3, 'paint-order': 'stroke', 'pointer-events': 'none' });
+  tag(dEnd, 'D', '', C.blue, 16); tag(sEnd, 'O', '', C.green, 16); if (t >= 2) tag(tEnd, 'O + t', '', C.gold, -8);
+
+  // Repères pointillés
+  const guide = (x1, y1, x2, y2) => el('line', { x1, y1, x2, y2, stroke: '#7b879b', 'stroke-dasharray': '4 4', 'pointer-events': 'none' }, svg);
+  guide(x(Q0), y(P0), x(Q0), B); guide(L, y(P0), x(Q0), y(P0));
+  if (t > 0) { guide(x(qt), y(pc), x(qt), B); guide(L, y(pc), x(qt), y(pc)); guide(L, y(pp), x(qt), y(pp)); }
+  // Écart fiscal (taxe)
+  if (t > 0) el('line', { x1: x(qt), x2: x(qt), y1: y(pc), y2: y(pp), stroke: C.gold, 'stroke-width': 4, 'pointer-events': 'none' }, svg);
+  // Points d'équilibre
+  const dot = (q, p, col, html) => tip(el('circle', { cx: x(q), cy: y(p), r: 6, fill: col, stroke: '#fff', 'stroke-width': 2 }, svg), html);
+  dot(Q0, P0, C.ink, `<b>Équilibre initial E₀</b><br>P₀ = ${eur(P0)}, Q₀ = ${Q0}`);
+  if (t > 0) {
+    dot(qt, pc, C.blue, `<b>Prix consommateur</b><br>P<sub>c</sub> = ${eur(pc)}<br>(${sgn(pc - P0, ' €')} par rapport à P₀)`);
+    dot(qt, pp, C.green, `<b>Prix producteur</b><br>P<sub>p</sub> = ${eur(pp)}<br>(${sgn(pp - P0, ' €')} par rapport à P₀)`);
+  }
+  // Annotations
+  const lab = (px, py, txt, sub, col, anchor) => stext(svg, px, py, txt, sub, { 'text-anchor': anchor || 'start', 'font-size': 12, 'font-weight': 700, fill: col, stroke: '#fff', 'stroke-width': 3, 'paint-order': 'stroke', 'pointer-events': 'none' });
+  lab(x(Q0) + 9, y(P0) - 9, 'E', '0', C.ink);
+  lab(x(Q0) + 4, B - 6, 'Q', '0', C.ink);
+  if (t > 0) {
+    lab(x(qt) - 4, B - 6, 'Q', 't', C.ink, 'end');
+    lab(L + 5, y(pc) - 5, `P`, `c = ${fmt(pc)}`, C.blue);
+    lab(L + 5, y(pp) + 15, `P`, `p = ${fmt(pp)}`, C.green);
+    if (x(qt) - L > 110 && y(pp) - y(pc) > 20) {
+      const midY = (y(pc) + y(pp)) / 2 + 4;
+      lab(x(qt) - 8, midY, `t = ${fmt(t)} €`, '', '#7a5f14', 'end');
+      lab((L + x(qt)) / 2 - 20, midY, 'Recettes', '', '#7a5f14', 'middle');
+    }
+    if (x(Q0) - x(qt) > 62 && y(pp) - y(pc) > 22) lab((x(qt) + x(Q0)) / 2 + 6, (y(pc) + y(pp)) / 2 + 4, 'Perte sèche', '', '#7d3a29', 'middle');
+  }
+}
+/* Infobulles (souris et tactile) */
+const tipEl = $('tip');
+function showTip(e) {
+  const n = e.target.closest && e.target.closest('[data-tip]');
+  if (!n) { tipEl.style.opacity = 0; return; }
+  const r = $('chartBox').getBoundingClientRect();
+  tipEl.innerHTML = n.getAttribute('data-tip'); tipEl.style.opacity = 1;
+  const w = tipEl.offsetWidth;
+  tipEl.style.left = Math.max(0, Math.min(r.width - w, e.clientX - r.left + 12)) + 'px';
+  tipEl.style.top = Math.max(0, e.clientY - r.top - tipEl.offsetHeight - 10) + 'px';
+}
+$('chart').addEventListener('pointermove', showTip); $('chart').addEventListener('pointerdown', showTip);
+$('chart').addEventListener('pointerleave', () => tipEl.style.opacity = 0);
+
+/* --- Mise à jour de l'interface --- */
+let cur = null, tgt = null, raf = 0;
+function readInputs() { return { t: +$('tax').value, a: +$('demand').value, b: +$('supply').value }; }
+function setFill(id) { const i = $(id); i.style.setProperty('--pct', ((i.value - i.min) / (i.max - i.min) * 100) + '%'); }
+function lecture(m) {
+  if (m.t === 0) return 'Sans taxe, le marché reste à l\'équilibre initial E₀ : pas de recettes, pas de perte sèche. Augmentez la taxe pour voir apparaître le coin fiscal.';
+  const side = Math.abs(m.a - m.b) < 0.05 ? 'Offre et demande ont des sensibilités comparables : la charge se partage à parts égales.'
+    : m.b > m.a ? `L'offre réagit davantage au prix que la demande (b > a). Les producteurs peuvent ajuster plus facilement leur production : les consommateurs supportent ${pct(m.sc * 100)} de la taxe.`
+    : `La demande réagit davantage au prix que l'offre (a > b). Les consommateurs peuvent ajuster plus facilement leurs achats : les producteurs supportent ${pct(m.sp * 100)} de la taxe.`;
+  return `${side} La taxe fait disparaître ${fmt(m.lost)} unités échangées ; la perte sèche représente ${pct(m.dwl / m.rev * 100)} des recettes fiscales. Doubler la taxe multiplierait la perte sèche par 4.`;
+}
+function renderNumbers(m) {
+  $('taxOut').textContent = eur(m.t); $('dOut').textContent = fmt(m.a); $('sOut').textContent = fmt(m.b);
+  ['tax', 'demand', 'supply'].forEach(setFill);
+  $('pc').textContent = eur(m.pc); $('pp').textContent = eur(m.pp); $('qt').textContent = fmt(m.qt);
+  $('dpc').textContent = sgn(m.pc - P0, ' €') + ' par rapport à P₀'; $('dpp').textContent = sgn(m.pp - P0, ' €') + ' par rapport à P₀'; $('dqt').textContent = sgn(m.qt - Q0, '') + ' par rapport à Q₀';
+  $('revenue').textContent = eur(m.rev); $('dwl').textContent = eur(m.dwl); $('lostq').textContent = fmt(m.lost);
+  $('dwlSub').textContent = '½ × t × (Q₀ − Qₜ)';
+  $('consumerShare').textContent = pct(m.sc * 100); $('producerShare').textContent = pct(m.sp * 100);
+  $('cUnit').textContent = `(${eur(m.pc - P0)} par unité)`; $('pUnit').textContent = `(${eur(P0 - m.pp)} par unité)`;
+  $('consumerBar').style.width = (m.sc * 100) + '%'; $('producerBar').style.width = (m.sp * 100) + '%';
+  $('incidenceText').textContent = m.t === 0 ? 'Aucune taxe : aucune charge à répartir.' : m.sc > m.sp + 1e-8 ? 'Les consommateurs supportent la plus grande part de la taxe.' : m.sp > m.sc + 1e-8 ? 'Les producteurs supportent la plus grande part de la taxe.' : 'Les deux côtés supportent ici la même part de la taxe.';
+  $('ed').textContent = fmt(m.ed); $('eo').textContent = fmt(m.es);
+  $('equations').innerHTML = `Q<sub>D</sub> = 60 + ${fmt(m.a)}(20 − P<sub>c</sub>)<br>Q<sub>O</sub> = 60 + ${fmt(m.b)}(P<sub>p</sub> − 20)<br>P<sub>c</sub> = P<sub>p</sub> + ${fmt(m.t)}<br>Q<sub>t</sub> = 60 − ${fmt(m.a * m.b / (m.a + m.b))} × ${fmt(m.t)} = ${fmt(m.qt)}`;
+  $('checks').innerHTML = Econ.checks(m).map(([txt, ok]) => `<li><span class="${ok ? 'ok' : 'ko'}">${ok ? '✓' : '✗'}</span> ${txt}</li>`).join('');
+  $('lecture').textContent = lecture(m);
+}
+function animate() {                        // transition douce du graphique vers les valeurs cibles
+  const k = reduced ? 1 : 0.4; let done = true;
+  for (const key of ['t', 'a', 'b']) { const d = tgt[key] - cur[key]; if (Math.abs(d) > 1e-3) { cur[key] += d * k; done = false; } else cur[key] = tgt[key]; }
+  draw(Econ.solve(cur.t, cur.a, cur.b));
+  if (!done) raf = requestAnimationFrame(animate);
+}
+function update() {
+  tgt = readInputs(); if (!cur) cur = Object.assign({}, tgt);
+  renderNumbers(Econ.solve(tgt.t, tgt.a, tgt.b));
+  cancelAnimationFrame(raf); animate();
+}
+function setParams(t, a, b, scroll) {
+  $('tax').value = t; $('demand').value = a; $('supply').value = b; update();
+  if (scroll) $('simulateur').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+}
+['tax', 'demand', 'supply'].forEach(id => $(id).addEventListener('input', update));
+$('reset').addEventListener('click', () => setParams(10, 2, 2));
+$('presetA').addEventListener('click', () => setParams(10, 1, 3, true));
+document.querySelectorAll('[data-p]').forEach(btn => btn.addEventListener('click', () => { const [t, a, b] = btn.dataset.p.split(',').map(Number); setParams(t, a, b, true); }));
+new ResizeObserver(() => { if (tgt) draw(Econ.solve(cur.t, cur.a, cur.b)); }).observe($('chartBox'));
+
+/* --- Vérification des connaissances --- */
+$('check').addEventListener('click', () => {
+  const choice = $('prediction').value, reason = $('reason').value.trim(), box = $('feedback');
+  box.style.display = 'block';
+  if (!choice) { box.className = 'fb warn'; box.textContent = 'Choisissez d’abord une réponse.'; return; }
+  const ok = choice === 'consumers';
+  box.className = 'fb ' + (ok ? 'good' : 'warn');
+  box.textContent = (ok ? 'Bonne prédiction. ' : 'Pas tout à fait. ') + 'Avec a = 1 et b = 3, la demande est moins sensible que l’offre. Les consommateurs supportent 3/(1+3) = 75 % de la taxe, contre 25 % pour les producteurs. ' + (reason ? 'Votre raisonnement : « ' + reason + ' »' : 'Pensez à relier votre réponse à la sensibilité relative des deux côtés du marché.') + ' Manipulez maintenant les curseurs et vérifiez les prix et la répartition.';
+});
+const QUIZ = [
+  { q: 'Si la taxe passe de 5 € à 10 € (a et b inchangés), la perte sèche est…', o: ['multipliée par 2', 'multipliée par 4', 'inchangée'], c: 1, e: 'Dans le modèle linéaire, DWL = ½ × [ab/(a+b)] × t² : elle varie avec le carré de la taxe.' },
+  { q: 'Si l\'offre est plus sensible au prix que la demande (b > a), la charge fiscale pèse davantage sur…', o: ['les consommateurs', 'les producteurs', 'les deux de façon égale'], c: 0, e: 'Part des consommateurs = b/(a+b) : le côté le moins sensible au prix supporte la plus grande part.' },
+  { q: 'Le prix payé par les consommateurs est égal…', o: ['au prix producteur moins la taxe', 'au prix producteur plus la taxe', 'au prix initial P₀'], c: 1, e: 'Le coin fiscal vaut toujours t : Pc = Pp + t.' }
+];
+$('quiz').innerHTML = QUIZ.map((x, i) => `<div class="q" data-i="${i}"><b>${x.q}</b>${x.o.map((o, j) => `<label class="o"><input type="radio" name="q${i}" value="${j}"> ${o}</label>`).join('')}<div class="fb" aria-live="polite"></div></div>`).join('');
+$('quiz').addEventListener('change', e => {
+  const q = e.target.closest('.q'), x = QUIZ[+q.dataset.i], ok = +e.target.value === x.c, fb = q.querySelector('.fb');
+  fb.style.display = 'block'; fb.className = 'fb ' + (ok ? 'good' : 'warn'); fb.textContent = (ok ? 'Exact. ' : 'Pas tout à fait. ') + x.e;
+});
+
+/* --- Navigation active --- */
+const links = [...document.querySelectorAll('nav a')];
+const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) links.forEach(l => l.classList.toggle('on', l.getAttribute('href') === '#' + en.target.id)); }), { rootMargin: '-35% 0px -60% 0px' });
+document.querySelectorAll('main section').forEach(s => io.observe(s));
+update();
+</script>
+<script>
+/* =====================================================================
+   MES RÉPONSES : questions + réponses modifiables (enregistrées dans le navigateur)
+   ===================================================================== */
+const REP = [
+ ['Expérience A (t = 10 €, a = 1, b = 3)', [
+  ['Prédiction : qui supportera la plus grande part de la taxe ? Justifiez.', "Les consommateurs supporteront la plus grande partie de la taxe. La demande étant relativement moins élastique que l'offre, les consommateurs sont moins sensibles aux variations de prix. Même si le prix augmente, ils continueront à acheter le produit, car ils ont moins de possibilités de s'en détourner. Les producteurs pourront donc leur transférer une plus grande partie de la taxe.\nConclusion : c'est le côté du marché le moins sensible aux variations de prix qui supporte généralement la plus grande part de la charge fiscale."],
+  ['1. De combien le prix payé a-t-il augmenté et le prix reçu baissé ?', "Prix initial : 20 €. Après taxe : prix payé 27,50 €, prix reçu 17,50 €.\nÉcarts : 27,50 − 20 = 7,50 € et 20 − 17,50 = 2,50 €. Ils ne sont pas égaux ; leur somme vaut exactement la taxe : 7,50 + 2,50 = 10 €.\nLes consommateurs supportent 75 % de la taxe et les producteurs 25 %."],
+  ['2. Quel lien entre ces écarts, les parts affichées et les élasticités ?', "La demande est moins élastique que l'offre. Élasticités initiales : |E_D| = 1/3 = 0,33 et E_O = 3/3 = 1.\nLa demande étant moins sensible aux prix, les consommateurs supportent une part plus importante de la taxe : 75 % contre 25 % pour les producteurs. Plus un côté du marché est relativement inélastique, plus il supporte la charge fiscale."],
+  ['3. Comment reconnaître sur le graphique le côté qui supporte le plus ?', "On compare la distance entre chacun des deux prix après taxe et le prix initial P₀. Ici P_c est supérieur à P₀ de 7,50 € et P_p inférieur à P₀ de 2,50 €. La distance P_c − P₀ est plus grande : les consommateurs supportent la plus grande partie de la taxe.\nPour identifier qui supporte le plus, il suffit de comparer les écarts entre le prix initial et les deux nouveaux prix."]]],
+ ['Expérience B (t = 10 €, a = 3, b = 1)', [
+  ['1. Qui supporte la plus grande part de la taxe, et dans quelle proportion ?', "Ce sont les producteurs. L'offre est relativement moins élastique que la demande : les producteurs sont moins capables d'adapter leurs quantités quand le prix varie.\nConsommateurs : 25 % (2,50 €). Producteurs : 75 % (7,50 €)."],
+  ['2. Le prix payé sera-t-il plus haut, plus bas ou égal à celui de l\'expérience A (27,50 €) ?', "Plus bas. P_c = 20 + (1/(3+1)) × 10 = 22,50 €. Le consommateur ne supporte que 2,50 € de la taxe, contre 7,50 € dans l'expérience A."],
+  ['3. La perte sèche sera-t-elle plus grande, plus petite ou égale à celle de l\'expérience A (37,50 €) ?', "Égale : 37,50 €. Q₀ − Q_t = (3 × 1 / (3 + 1)) × 10 = 7,5, donc DWL = ½ × 10 × 7,5 = 37,50 €.\nL'inversion des élasticités modifie la répartition de la charge fiscale, mais pas nécessairement la perte sèche : l'incidence détermine qui supporte la taxe, la perte sèche mesure la perte d'efficacité."]]],
+ ['Expérience C (a = b = 2, t = 0, 5, 10, 15, 20 €)', [
+  ['1. Que deviennent P_c, P_p et Q_t quand t augmente ? Les variations sont-elles proportionnelles à t ?', "P_c augmente, P_p diminue, Q_t diminue. Les élasticités étant identiques, la taxe est répartie à parts égales.\nP_c = 20 + t/2 ; P_p = 20 − t/2 ; Q_t = 60 − t. Dans ce modèle linéaire, les variations sont proportionnelles à la taxe."],
+  ['2. Les recettes fiscales augmentent-elles proportionnellement à t ? Pourraient-elles diminuer ?', "Non. RF = t × Q_t et la quantité diminue quand la taxe augmente.\nt = 0 : 0 € ; t = 5 : 275 € ; t = 10 : 500 € ; t = 15 : 675 € ; t = 20 : 800 €. Les recettes augmentent, mais de moins en moins vite.\nElles peuvent diminuer si la taxe devient assez élevée : la quantité échangée baisse alors plus que ce que la hausse de taxe compense."],
+  ['3. De t = 5 € à t = 10 €, la perte sèche est-elle multipliée par 2, par 4 ou autre ?', "Multipliée par 4. Q₀ − Q_t = t, donc DWL = ½ t². Pour 5 € : 12,50 € ; pour 10 € : 50 € ; 50 / 12,50 = 4.\nDoubler une taxe ne double pas ses conséquences : la perte d'efficacité peut croître beaucoup plus vite que le montant prélevé."]]],
+ ['Expérience D (t = 10 €, marché 1 : a = b = 1 ; marché 2 : a = b = 5)', [
+  ['1. Dans quel marché la quantité échangée diminue-t-elle le plus ?', "Dans le marché 2, car consommateurs et producteurs y sont tous deux plus sensibles au prix. Q_t = 60 − (ab/(a+b)) × t.\nMarché 1 : Q_t = 55 (baisse de 5). Marché 2 : Q_t = 35 (baisse de 25), cinq fois plus."],
+  ['2. Dans quel marché la perte sèche est-elle la plus grande ?', "Dans le marché 2. Marché 1 : DWL = ½ × 10 × 5 = 25 €. Marché 2 : DWL = ½ × 10 × 25 = 125 €, cinq fois plus.\nQuand l'offre et la demande sont très sensibles aux prix, davantage d'échanges mutuellement avantageux disparaissent."],
+  ['3. Dans quel marché les recettes fiscales sont-elles les plus élevées ?', "Dans le marché 1 : 10 × 55 = 550 € contre 10 × 35 = 350 € dans le marché 2, soit 200 € de plus, car davantage d'unités sont encore échangées.\nLes deux marchés ont la même répartition (50 % / 50 %) et les mêmes prix (25 € et 15 €). Il ne faut pas confondre qui supporte l'impôt et quelles sont ses conséquences économiques."]]],
+ ["Étape 4 : vérification des connaissances", [
+  ["Question 1. Une loi impose à un commerçant de verser une taxe de 2 € par unité. Un étudiant dit : « Le commerçant paie, donc il en supporte tout le poids. » Cette affirmation est-elle correcte ? Que se passe-t-il si la taxe est imposée à l'acheteur ? Quelle condition sur les élasticités pour que le commerçant supporte presque tout ?", "L'incidence légale désigne la personne juridiquement tenue de payer l'impôt à l'administration. L'incidence économique désigne celle qui supporte réellement la charge après ajustement des prix et des quantités. Elles ne sont pas nécessairement identiques : si l'État taxe les producteurs, ceux-ci peuvent augmenter leurs prix et en transférer une partie, voire la plus grande partie, aux consommateurs.\nConclusion : ce n'est pas nécessairement celui qui verse l'impôt qui en supporte le coût économique ; cela dépend principalement des élasticités de l'offre et de la demande."],
+  ["Question 2. P₀ = 20, Q₀ = 60, t = 10, |E_D| = 0,2, E_O = 0,8. Part de chaque côté, P_c et P_p, et correction de la phrase « L'offre est plus élastique, donc les producteurs sont les plus touchés ».", "Part des consommateurs = E_O / (E_O + |E_D|) = 0,8 / 1 = 80 %. Part des producteurs = 20 %.\nP_c = 20 + 0,8 × 10 = 28 € ; P_p = 20 − 0,2 × 10 = 18 € ; vérification : 28 − 18 = 10 €.\nLa phrase est incorrecte : c'est le côté le moins élastique qui supporte la plus grande partie de la taxe. Ici l'offre est plus élastique, les producteurs peuvent adapter leur quantité offerte, alors que les consommateurs ont moins de possibilités de réduire leur consommation : ils supportent 80 %."],
+  ["Question 3. a = 1, b = 3, t = 10 €. Surplus avant et après taxe, recettes fiscales, bilan collectif.", "Demande inverse : P = 80 − Q (ordonnée à l'origine 80). Offre inverse : P = Q/3 (ordonnée à l'origine 0).\nAvant : SC₀ = ½ (80 − 20) × 60 = 1 800 € ; SP₀ = ½ (20 − 0) × 60 = 600 €.\nAprès (P_c = 27,50 ; P_p = 17,50 ; Q_t = 52,5) : SC₁ = ½ (80 − 27,5) × 52,5 = 1 378,125 € ; SP₁ = ½ × 17,5 × 52,5 = 459,375 €.\nRecettes : 10 × 52,5 = 525 €.\nBilan : SC₁ + SP₁ + RF = 2 362,50 € contre 2 400 € avant : variation de −37,50 €. Cette différence est la perte sèche, perte de surplus récupérée ni par les consommateurs, ni par les producteurs, ni par l'État."],
+  ["Question 4. a = b = 4, t = 6 €. Q_t, recettes, perte sèche, triangle de perte sèche, et cas b → 0.", "Q_t = 60 − (4×4/(4+4)) × 6 = 48. Recettes : 6 × 48 = 288 €. DWL = ½ × 6 × (60 − 48) = 36 €.\nSommets du triangle : (60 ; 20), (48 ; 23) sur la demande, (48 ; 17) sur l'offre.\nLes recettes forment un rectangle car la taxe est constante sur chaque unité vendue : t × Q_t. La perte sèche forme un triangle car les échanges supprimés représentent une perte de surplus qui évolue progressivement : DWL = ½ × t × (Q₀ − Q_t).\nSi b → 0 : DWL = ½ t² ab/(a+b) → 0. La quantité échangée ne diminue plus et les producteurs supportent toute la charge."],
+  ["Question 5. Une taxe a une perte sèche faible : « Cet impôt est donc souhaitable. » Pourquoi cette conclusion est-elle insuffisante ? Deux hypothèses qui faussent l'incidence ? Quand une taxe est-elle justifiée malgré une perte sèche positive ?", "1. Une faible perte sèche ne signifie pas qu'un impôt est souhaitable. Il faut tenir compte des effets redistributifs (un impôt peut peser davantage sur les ménages modestes) et de l'utilisation des recettes (infrastructures, éducation, santé).\n2. Concurrence parfaite : des entreprises avec un pouvoir de marché répercutent la taxe différemment. Équilibre partiel : une taxe sur un produit affecte aussi les substituts, les matières premières et le travail (ex. carburants et coûts de transport).\n3. Lorsqu'elle corrige une externalité négative (taxe pigouvienne, par exemple sur les émissions polluantes) : la perte sèche du modèle sans externalité ne suffit pas à mesurer le gain social global."]]]
+];
+(function () {
+  const KEY = 'lab-eco-pub-reponses-v1', box = document.getElementById('repBox'), tag = document.getElementById('saved');
+  let store = {}; try { store = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const fit = t => { t.style.height = 'auto'; t.style.height = (t.scrollHeight + 2) + 'px'; };
+  function render() {
+    box.innerHTML = REP.map((s, i) => `<h3>${esc(s[0])}</h3>` + s[1].map((r, j) => {
+      const k = i + '-' + j, v = store[k] !== undefined ? store[k] : r[1];
+      return `<p class="qq">${esc(r[0])}</p><textarea data-k="${k}" aria-label="Réponse">${esc(v)}</textarea>`;
+    }).join('')).join('');
+    box.querySelectorAll('textarea').forEach(fit);
+  }
+  let timer;
+  box.addEventListener('input', e => {
+    const t = e.target; fit(t); store[t.dataset.k] = t.value;
+    try { localStorage.setItem(KEY, JSON.stringify(store)); tag.classList.add('on'); clearTimeout(timer); timer = setTimeout(() => tag.classList.remove('on'), 1200); } catch (err) {}
+  });
+  const all = () => REP.map((s, i) => s[0] + '\n\n' + s[1].map((r, j) => { const t = box.querySelector(`[data-k="${i}-${j}"]`); return r[0] + '\n' + (t ? t.value : r[1]); }).join('\n\n')).join('\n\n==========\n\n');
+  const expBtn = document.getElementById('repExport');
+  expBtn.addEventListener('click', async () => {
+    const data = all(), filename = 'mes_reponses_incidence_fiscale.txt';
+    try {                                  // page publiée : capacité « downloads »
+      const dl = window.claude && await claude.use('downloads');
+      if (dl) { await dl.save({ filename, data }); return; }
+    } catch (err) { if (err && err.code === 'declined') return; }
+    const a = document.createElement('a');  // repli : fichier HTML ouvert localement
+    a.href = URL.createObjectURL(new Blob([data], { type: 'text/plain;charset=utf-8' }));
+    a.download = filename; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+  document.getElementById('repPrint').addEventListener('click', () => { box.querySelectorAll('textarea').forEach(fit); window.print(); });
+  document.getElementById('repReset').addEventListener('click', () => { if (confirm('Rétablir toutes vos réponses d\'origine ? Vos modifications seront perdues.')) { store = {}; try { localStorage.removeItem(KEY); } catch (e) {} render(); } });
+  render(); addEventListener('resize', () => box.querySelectorAll('textarea').forEach(fit));
+})();
+</script>
+</body>
+</html>
