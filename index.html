@@ -698,9 +698,9 @@ const REP = [
 <!-- =====================================================================
      EXTENSION : Splash screen sur fond blanc transparent & Image corrigée
      ===================================================================== -->
-<style>
-  /* 1. Écran de chargement avec fond blanc transparent lumineux */
-#splash-screen {
+ <style>
+  /* Écran de chargement avec un fond blanc transparent lumineux */
+  #splash-screen {
     position: fixed;
     inset: 0;
     z-index: 99999;
@@ -720,7 +720,7 @@ const REP = [
     visibility: hidden;
   }
 
-  /* 2. Conteneur de la photo avec le cercle de chargement tournant */
+  /* Conteneur de la photo avec le cercle de chargement tournant */
   .splash-loader-wrapper {
     position: relative;
     width: 280px;
@@ -736,8 +736,8 @@ const REP = [
     inset: -6px;
     border-radius: 50%;
     border: 4px solid transparent;
-    border-top-color: var(--gold, #b08a2e);
-    border-right-color: var(--blue, #2c5a9e);
+    border-top-color: #b08a2e;
+    border-right-color: #2c5a9e;
     animation: spin-loader 1.2s linear infinite;
   }
   #splash-screen img.splash-img {
@@ -752,11 +752,11 @@ const REP = [
   #splash-screen h2 {
     font-family: var(--serif);
     font-size: 24px;
-    color: var(--navy, #0e1b33);
+    color: #0e1b33;
     margin-bottom: 6px;
   }
   #splash-screen p {
-    color: var(--muted, #617088);
+    color: #617088;
     font-size: 14px;
   }
 
@@ -765,7 +765,7 @@ const REP = [
     100% { transform: rotate(360deg); }
   }
 
-  /* 3. Style du logo de l'UCA en haut de la page */
+  /* Style du logo de l'UCA en haut de la page */
   .uni-header-logo {
     display: flex;
     align-items: center;
