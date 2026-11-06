@@ -695,23 +695,23 @@ const REP = [
   render(); addEventListener('resize', () => box.querySelectorAll('textarea').forEach(fit));
 })();
 </script>
- <!-- =====================================================================
-     EXTENSION : Splash screen avec cercle de chargement & Logo UCA local
+<!-- =====================================================================
+     EXTENSION : Splash screen sur fond blanc transparent & Image corrigée
      ===================================================================== -->
 <style>
-  /* 1. Écran de chargement avec fond transparent / assombri élégant */
+  /* 1. Écran de chargement avec fond blanc transparent lumineux */
   #splash-screen {
     position: fixed;
     inset: 0;
     z-index: 99999;
-    background: rgba(14, 27, 51, 0.85); /* Fond sombre semi-transparent */
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.90); /* Fond blanc semi-transparent */
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #fff;
+    color: var(--ink, #16233b);
     font-family: var(--sans);
     transition: opacity 0.8s ease, visibility 0.8s ease;
   }
@@ -744,18 +744,19 @@ const REP = [
     width: 260px;
     height: 260px;
     object-fit: cover;
-    border-radius: 50%; /* Photo parfaitement ronde au centre du cercle */
-    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 15px 35px rgba(14, 27, 51, 0.15);
   }
 
   #splash-screen h2 {
     font-family: var(--serif);
     font-size: 24px;
+    color: var(--navy, #0e1b33);
     margin-bottom: 6px;
-    letter-spacing: -0.01em;
   }
   #splash-screen p {
-    color: #cbd5e1;
+    color: var(--muted, #617088);
     font-size: 14px;
   }
 
@@ -788,7 +789,7 @@ const REP = [
 <!-- Écran de chargement -->
 <div id="splash-screen">
   <div class="splash-loader-wrapper">
-    <!-- Remplacez "ma-photo.jpg" par le nom ou le chemin de votre photo -->
+    <!-- Assurez-vous que le nom du fichier est rigoureusement identique à celui dans votre dossier -->
     <img class="splash-img" src="ma-signature.png" alt="Photo d'ouverture">
   </div>
   <h2>Chargement du module...</h2>
@@ -807,14 +808,13 @@ const REP = [
     }, 2500);
   });
 
-  // Injection du logo de l'UCA depuis le sous-dossier en haut de la page
+  // Injection du logo de l'UCA en haut de la page
   const glassBox = document.querySelector('.hero .glass');
   if (glassBox) {
     const logoDiv = document.createElement('div');
     logoDiv.className = 'uni-header-logo';
-    // Chemin pointant vers votre sous-dossier (ex: images/logo-uca.png)
     logoDiv.innerHTML = `
-      <img src="images/logo-uca.png" alt="Logo Université Clermont Auvergne">
+      <img src="logo-uca.png" alt="Logo Université Clermont Auvergne">
       <span>Université Clermont Auvergne</span>
     `;
     glassBox.insertBefore(logoDiv, glassBox.firstChild);
