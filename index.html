@@ -695,5 +695,105 @@ const REP = [
   render(); addEventListener('resize', () => box.querySelectorAll('textarea').forEach(fit));
 })();
 </script>
+  <!-- =====================================================================
+     EXTENSION : Écran de chargement (photo d'ouverture) & Logo de l'Université
+     ===================================================================== -->
+<style>
+  /* Style de l'écran de chargement d'ouverture */
+  #splash-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #0e1b33;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: var(--sans);
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+  #splash-screen.fade-out {
+    opacity: 0;
+    visibility: hidden;
+  }
+  #splash-screen img.splash-img {
+    width: min(90vw, 500px);
+    height: 300px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    margin-bottom: 24px;
+    animation: pulse-splash 2s infinite alternate;
+  }
+  #splash-screen h2 {
+    font-family: var(--serif);
+    font-size: 26px;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  #splash-screen p {
+    color: #8a95a8;
+    font-size: 14px;
+  }
+  @keyframes pulse-splash {
+    from { transform: scale(0.98); }
+    to { transform: scale(1.02); }
+  }
+
+  /* Style et positionnement du logo de l'Université en haut de la page */
+  .uni-header-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .uni-header-logo img {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+  }
+  .uni-header-logo span {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+</style>
+
+<div id="splash-screen">
+  <!-- Remplacez l'URL ci-dessous par le lien de votre photo d'ouverture -->
+  <img class="splash-img" src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1000&q=80" alt="Chargement Université Clermont Auvergne">
+  <h2>Chargement du module...</h2>
+  <p>Finance Publique — Université Clermont Auvergne</p>
+</div>
+
+<script>
+  // 1. Gestion de la disparition du splash screen après 2,5 secondes
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const splash = document.getElementById('splash-screen');
+      if (splash) {
+        splash.classList.add('fade-out');
+        setTimeout(() => splash.remove(), 800);
+      }
+    }, 2500); // Durée d'affichage en millisecondes (2.5 secondes)
+  });
+
+  // 2. Injection dynamique du logo de l'université en haut de la page (dans le bloc .glass de la hero)
+  const glassBox = document.querySelector('.hero .glass');
+  if (glassBox) {
+    const logoDiv = document.createElement('div');
+    logoDiv.className = 'uni-header-logo';
+    // Remplacez l'URL ci-dessous par le lien officiel ou le fichier de votre logo universitaire
+    logoDiv.innerHTML = `
+      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Logo_Université_Clermont_Auvergne_%282020%29.svg" alt="Logo Université Clermont Auvergne">
+      <span>Université Clermont Auvergne</span>
+    `;
+    // Insère le logo tout en haut de la boîte de présentation principale
+    glassBox.insertBefore(logoDiv, glassBox.firstChild);
+  }
+</script>
 </body>
 </html>
