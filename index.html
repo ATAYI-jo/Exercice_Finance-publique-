@@ -13,26 +13,37 @@
   --sans:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:64px}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
 body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.6 var(--sans)}
 h1,h2,h3{font-family:var(--serif);font-weight:600;margin:0;letter-spacing:-.01em}
 h2{font-size:24px;margin-bottom:6px}h3{font-size:17px;margin-bottom:6px}
 p{margin:0 0 10px}sub{font-size:.72em;line-height:0}
 .wrap{max-width:1180px;margin:auto;padding:0 20px}
 .muted{color:var(--muted);font-size:13px}
-/* En-tête */
-.hero{background:var(--navy);color:#fff;padding:40px 0 34px;border-bottom:3px solid var(--gold)}
-.hero .session{font-size:13px;color:#c9d6ee;margin-bottom:14px}
-.hero h1{font-size:clamp(28px,5vw,44px);line-height:1.1}
-.hero .sub{font-family:var(--serif);font-size:clamp(17px,2.4vw,22px);color:#e6d7a8;margin:8px 0 14px}
-.hero p.obj{max-width:720px;color:#cfd9ec;margin:0}
-.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
-.badge{border:1px solid #3b5282;border-radius:999px;padding:4px 12px;font-size:12px;color:#d6e0f3}
-/* Navigation */
-nav{position:sticky;top:0;z-index:20;background:rgba(246,245,241,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
-nav a{white-space:nowrap;padding:14px 14px 12px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:600;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
-nav a:hover{color:var(--ink)}nav a.on{color:var(--navy);border-color:var(--gold)}
+/* En-tête : couverture transparente */
+.hero{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;min-height:clamp(640px,95vh,880px);padding:110px 0 150px;color:var(--ink)}
+.cover{position:absolute;inset:0;z-index:-2;width:100%;height:100%;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)}
+.hero .wrap{position:relative;width:100%;z-index:1}
+.glass{max-width:660px;padding:34px 38px 30px;border-radius:24px;background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(12px) saturate(1.3);backdrop-filter:blur(12px) saturate(1.3);border:1px solid rgba(255,255,255,.75);box-shadow:0 24px 60px rgba(14,27,51,.14);animation:rise .9s cubic-bezier(.2,.8,.2,1) both}
+.hero .session{font-size:13px;color:#4a5b78;margin-bottom:14px;font-weight:600}
+.hero h1{font-size:clamp(44px,7.4vw,92px);line-height:.98;color:var(--navy)}
+.hero .sub{font-family:var(--serif);font-size:clamp(19px,2.6vw,27px);color:#8a6a14;margin:12px 0 16px}
+.hero p.obj{max-width:560px;color:#33425c;margin:0;font-size:16px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.badge{border:1px solid rgba(14,27,51,.16);background:rgba(255,255,255,.65);border-radius:999px;padding:4px 12px;font-size:12px;color:#2c3c58}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.cta a{padding:11px 20px;border-radius:999px;font-weight:700;font-size:14px;text-decoration:none;transition:transform .2s,background .2s}
+.cta .go{background:var(--navy);color:#fff}.cta .go:hover{background:var(--navy2);transform:translateY(-2px)}
+.cta .alt{background:rgba(255,255,255,.7);color:var(--navy);border:1px solid rgba(14,27,51,.18)}.cta .alt:hover{transform:translateY(-2px)}
+.cast{position:absolute;right:max(3vw,14px);bottom:56px;z-index:1;display:flex;align-items:flex-end;gap:2px}
+.cast .av{--w:124px;cursor:pointer;animation:rise .9s cubic-bezier(.2,.8,.2,1) both}.cast .av.big{--w:158px;animation-delay:.12s}.cast .av:last-child{animation-delay:.24s}
+.cast .av:hover svg{animation:hop .5s}
+.fcoin{position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);border-radius:50%;display:grid;place-items:center;font:700 calc(var(--s)*.5) var(--serif);font-style:normal;color:#7a5f14;background:radial-gradient(circle at 30% 28%,#f8de7e,#d2a93a);border:2px solid #b08a2e;box-shadow:0 8px 18px rgba(176,138,46,.3);animation:floaty 5s ease-in-out infinite;animation-delay:var(--d)}
+/* Navigation : pilule de verre */
+nav{position:sticky;top:10px;z-index:30;margin:-34px auto 0;width:calc(100% - 28px);max-width:1180px;background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);border:1px solid rgba(255,255,255,.75);border-radius:999px;box-shadow:0 8px 28px rgba(14,27,51,.1)}
+nav .wrap{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;padding:6px 10px}
+nav a{white-space:nowrap;padding:10px 16px;border-radius:999px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:600;transition:color .2s,background .2s}
+nav a:hover{color:var(--ink);background:rgba(255,255,255,.7)}nav a.on{color:#fff;background:var(--navy)}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 /* Sections et cartes */
 section{padding:44px 0 6px}
@@ -42,7 +53,7 @@ section{padding:44px 0 6px}
 .grid3 p,.grid2 p{font-size:14px;color:#44536b}
 /* Simulateur */
 .lab{display:grid;grid-template-columns:310px minmax(0,1fr);gap:16px;margin-top:18px;align-items:start}
-.controls{position:sticky;top:64px}
+.controls{position:sticky;top:84px}
 .ctl{padding:14px 0;border-top:1px solid var(--line)}.ctl:first-of-type{border-top:0;padding-top:4px}
 .ctl-head{display:flex;justify-content:space-between;align-items:baseline;font-weight:600;font-size:14px}
 .ctl output{font-family:var(--serif);font-size:20px;color:var(--blue);font-variant-numeric:tabular-nums}
@@ -95,16 +106,104 @@ footer{text-align:center;color:#8a95a8;font-size:12px;padding:34px 20px 40px}
 .rep .qq{margin:14px 0 0;font-weight:600;font-size:14px}.rep textarea{min-height:60px;line-height:1.55;overflow:hidden}
 .saved{font-size:12px;color:var(--green);margin-left:6px;opacity:0;transition:opacity .3s}.saved.on{opacity:1}
 @media print{nav,.hero .badges,.btns,.controls,.lab,#simulateur,#intro,#cours,#analyse,#experiences,#verification,#limites,footer{display:none!important}.rep textarea{border:0;padding:0}}
+
+/* ===== Avatars flat et animations ===== */
+.av{width:var(--w,108px);display:block;line-height:0;flex:none}
+.av svg{width:100%;height:auto;overflow:visible;transform-origin:50% 100%;animation:bob 3.8s ease-in-out infinite;animation-delay:var(--d,0s)}
+.av .eye{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite;animation-delay:var(--d,0s)}
+.av .br{transform-box:fill-box;transform-origin:center;transition:transform .3s}
+.mh,.mn,.ms,.sweat{display:none}
+.av[data-mood=happy] .mh,.av[data-mood=neutral] .mn,.av[data-mood=sad] .ms,.av[data-mood=sad] .sweat{display:inline}
+.av[data-mood=happy] .br{transform:translateY(-1.5px)}
+.av[data-mood=sad] .bl{transform:rotate(-14deg)}.av[data-mood=sad] .brr{transform:rotate(14deg)}
+.sweat{animation:drip 1.8s ease-in infinite}
+.av.hop svg{animation:hop .5s ease,bob 3.8s ease-in-out .5s infinite}
+.cloud{animation:drift 50s ease-in-out infinite alternate}.cloud.c2{animation-duration:70s}.cloud.c3{animation-duration:60s;animation-direction:alternate-reverse}
+.sun{transform-box:fill-box;transform-origin:center;animation:sunpulse 6s ease-in-out infinite}
+.flag{transform-box:fill-box;transform-origin:left center;animation:wave 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-16px) scale(1.04)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-18px) rotate(8deg)}}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes drift{from{transform:translateX(-50px)}to{transform:translateX(70px)}}
+@keyframes sunpulse{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.12);opacity:1}}
+@keyframes wave{0%,100%{transform:skewY(0)}50%{transform:skewY(7deg)}}
+@keyframes pop{from{transform:scale(0) rotate(-90deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes fall{0%{transform:translateY(-8px) rotate(0);opacity:0}15%{opacity:1}100%{transform:translateY(34px) rotate(50deg);opacity:0}}
+@keyframes drip{0%{transform:translateY(0);opacity:1}100%{transform:translateY(14px);opacity:0}}
+/* Scène : la bascule de l'incidence */
+.stage{margin-top:14px;overflow:hidden;background:linear-gradient(#f1f6fb,#fff 65%)}
+.stage-head{display:flex;justify-content:space-between;gap:6px 14px;flex-wrap:wrap;align-items:baseline}
+.stage-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:16px;align-items:end;margin-top:6px}
+.seesaw{padding:80px 6px 54px}
+.beam{--tilt:0deg;position:relative;display:flex;justify-content:space-between;align-items:flex-end;max-width:420px;margin:0 auto;transform:rotate(var(--tilt));transform-origin:50% 100%;transition:transform .9s cubic-bezier(.3,1.6,.5,1)}
+.beam::after{content:"";position:absolute;left:-14px;right:-14px;bottom:-9px;height:11px;border-radius:6px;background:linear-gradient(var(--gold),#8a6a14)}
+.side{position:relative;display:flex;flex-direction:column;align-items:center;transform:rotate(calc(var(--tilt) * -1));transform-origin:50% 100%;transition:transform .9s cubic-bezier(.3,1.6,.5,1)}
+.burden{position:relative;margin-bottom:10px;padding:6px 11px;border-radius:12px;color:#fff;font-size:13px;line-height:1.25;text-align:center;white-space:nowrap;transform:scale(var(--s,1));transform-origin:50% 100%;transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
+.burden::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:inherit}
+.burden small{display:block;font-weight:500;font-size:11px;opacity:.92}
+.burden.c{background:var(--blue);border-top-color:var(--blue)}.burden.p{background:var(--green);border-top-color:var(--green)}
+.burden.c::after{border-top-color:var(--blue)}.burden.p::after{border-top-color:var(--green)}
+.pivot{width:0;height:0;margin:9px auto 0;border-left:30px solid transparent;border-right:30px solid transparent;border-bottom:44px solid var(--navy)}
+.treasury{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.treasury .av{--w:96px}
+.vault,.leak{position:relative;overflow:hidden;width:100%;min-height:78px;padding:8px 10px;border-radius:12px;font-size:12px}
+.vault{background:#f6efd9;border:1px solid #e2d3a2;color:#6b5314}
+.leak{background:#f7e9e4;border:1px solid #e6c4b9;color:#7d3a29;min-height:96px}
+.coins,.drops{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;margin-top:6px;min-height:22px}
+.coin,.drop{--i:0;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font:700 11px var(--sans);font-style:normal}
+.coin{background:radial-gradient(circle at 30% 30%,#f5d56b,#c9a23a);border:1px solid #9c7a1f;color:#7a5f14;animation:pop .45s both;animation-delay:calc(var(--i)*22ms)}
+.drop{background:#dcc9bc;border:1px solid #b99c8a;color:#8a6a5a;opacity:.8;animation:fall 2.2s ease-in infinite;animation-delay:calc(var(--i)*.23s)}
+.say{margin:14px 0 0;background:#eef3f9;border:1px solid #d5e0ee;border-radius:14px;padding:10px 14px;font-size:14px;color:#2c3c58}
+/* Avatars dans le contenu */
+.ic .av{--w:76px;margin-bottom:6px}.ic .pair{display:flex;gap:2px;margin-bottom:6px}.ic .pair .av{margin:0}
+.drops.mini{justify-content:flex-start;min-height:76px;margin:0 0 6px}
+.expav,.coach{display:flex;align-items:flex-end;gap:10px;margin-bottom:10px}
+.expav .av{--w:62px}.coach .av{--w:84px}.coach{margin:6px 0 4px}
+.bubble{position:relative;background:#eef3f9;border:1px solid #d5e0ee;border-radius:14px 14px 14px 4px;padding:8px 12px;font-size:13px;font-style:italic;color:#2c3c58;margin-bottom:8px}
+@media(max-width:960px){.hero{padding:96px 0 270px}.cast{right:50%;transform:translateX(50%);bottom:44px}.cast .av{--w:92px}.cast .av.big{--w:116px}.fcoin:nth-of-type(n+4){display:none}.glass{padding:26px 24px}}
+@media(max-width:620px){.stage-grid{grid-template-columns:1fr}.beam{max-width:330px}.av{--w:90px}.hero h1{font-size:44px}nav a{padding:9px 12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+@media print{.cover,.cast,.fcoin,.stage,.cta,.av{display:none!important}.hero{min-height:0;padding:20px 0}.glass{box-shadow:none;background:none;border:0}}
 </style>
 </head>
 <body>
-<header class="hero"><div class="wrap">
-  <div class="session">Séance interactive d'économie publique : taxe unitaire sur un marché concurrentiel</div>
-  <h1>Finance publique</h1>
-  <div class="sub">Incidence fiscale, élasticités et perte sèche</div>
-  <p class="obj">Objectif de la séance : comprendre qui supporte réellement une taxe, pourquoi cela dépend de la sensibilité relative de l'offre et de la demande au prix, et comment la taxe détruit une partie du surplus collectif.</p>
-  <div class="badges"><span class="badge">Équilibre partiel</span><span class="badge">Concurrence parfaite</span><span class="badge">Fonctions linéaires</span><span class="badge">Équilibre initial : P₀ = 20 €, Q₀ = 60</span></div>
-</div></header>
+<header class="hero">
+  <svg class="cover" viewBox="0 0 1440 700" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">
+    <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9d4ee"/><stop offset=".6" stop-color="#e6eef5"/><stop offset="1" stop-color="#f6f5f1"/></linearGradient></defs>
+    <rect width="1440" height="700" fill="url(#sky)"/>
+    <circle class="sun" cx="1230" cy="140" r="64" fill="#fbe2a0"/>
+    <g class="cloud c1" fill="#fff" opacity=".85"><ellipse cx="300" cy="120" rx="70" ry="22"/><ellipse cx="350" cy="106" rx="46" ry="22"/><ellipse cx="258" cy="112" rx="40" ry="16"/></g>
+    <g class="cloud c2" fill="#fff" opacity=".7"><ellipse cx="760" cy="64" rx="80" ry="20"/><ellipse cx="810" cy="52" rx="50" ry="20"/></g>
+    <g class="cloud c3" fill="#fff" opacity=".8"><ellipse cx="560" cy="230" rx="60" ry="16"/><ellipse cx="598" cy="220" rx="38" ry="16"/></g>
+    <g fill="#c3d3e6"><rect x="30" y="430" width="70" height="132"/><rect x="110" y="388" width="56" height="174"/><rect x="176" y="450" width="90" height="112"/><rect x="280" y="408" width="60" height="154"/><rect x="350" y="460" width="80" height="102"/><rect x="440" y="418" width="64" height="144"/><rect x="520" y="470" width="90" height="92"/></g>
+    <g fill="#d5e0ee" opacity=".9"><rect x="70" y="470" width="40" height="92"/><rect x="236" y="480" width="50" height="82"/><rect x="396" y="490" width="44" height="72"/></g>
+    <rect x="620" y="330" width="160" height="232" fill="#e9dfc8"/><rect x="1320" y="330" width="120" height="232" fill="#e9dfc8"/>
+    <g fill="#9db8d6"><rect x="644" y="360" width="26" height="42" rx="3"/><rect x="690" y="360" width="26" height="42" rx="3"/><rect x="736" y="360" width="26" height="42" rx="3"/><rect x="644" y="430" width="26" height="42" rx="3"/><rect x="690" y="430" width="26" height="42" rx="3"/><rect x="736" y="430" width="26" height="42" rx="3"/><rect x="1346" y="360" width="26" height="42" rx="3"/><rect x="1392" y="360" width="26" height="42" rx="3"/><rect x="1346" y="430" width="26" height="42" rx="3"/><rect x="1392" y="430" width="26" height="42" rx="3"/></g>
+    <rect x="790" y="300" width="510" height="222" fill="#d9ccaf"/><rect x="1030" y="402" width="40" height="120" rx="3" fill="#8a7a55"/>
+    <polygon points="770,270 1050,150 1330,270" fill="#f4ecd8"/><polygon points="812,262 1050,166 1288,262" fill="#e7dcc2"/>
+    <rect x="780" y="270" width="540" height="30" fill="#f4ecd8"/><rect x="780" y="296" width="540" height="6" fill="#e2d6b8"/>
+    <circle cx="1050" cy="226" r="28" fill="#d9b24a" stroke="#b08a2e" stroke-width="3"/><text x="1050" y="238" text-anchor="middle" font-size="34" font-weight="700" font-family="Georgia,serif" fill="#7a5f14">€</text>
+    <g fill="#f9f3e3"><rect x="800" y="302" width="40" height="220"/><rect x="892" y="302" width="40" height="220"/><rect x="984" y="302" width="40" height="220"/><rect x="1076" y="302" width="40" height="220"/><rect x="1168" y="302" width="40" height="220"/><rect x="1260" y="302" width="40" height="220"/></g>
+    <g fill="#e2d6b8"><rect x="830" y="302" width="10" height="220"/><rect x="922" y="302" width="10" height="220"/><rect x="1014" y="302" width="10" height="220"/><rect x="1106" y="302" width="10" height="220"/><rect x="1198" y="302" width="10" height="220"/><rect x="1290" y="302" width="10" height="220"/></g>
+    <rect x="1048" y="78" width="4" height="74" fill="#7a6a45"/><path class="flag" d="M1052 82h48l-10 12 10 12h-48z" fill="#a4543f"/>
+    <rect x="770" y="522" width="560" height="14" fill="#efe6d0"/><rect x="750" y="536" width="600" height="14" fill="#e3d8bd"/><rect x="730" y="550" width="640" height="14" fill="#d8ccaf"/>
+    <rect y="564" width="1440" height="136" fill="#ece5d1"/><path d="M900 564H1200L1320 700H780Z" fill="#e0d6bb"/>
+    <g><rect x="580" y="500" width="8" height="64" fill="#8a6a45"/><circle cx="584" cy="486" r="38" fill="#86b497"/><circle cx="558" cy="510" r="26" fill="#6fa384"/><circle cx="612" cy="508" r="24" fill="#6fa384"/></g>
+    <g><rect x="1396" y="506" width="8" height="58" fill="#8a6a45"/><circle cx="1400" cy="494" r="32" fill="#86b497"/><circle cx="1380" cy="514" r="20" fill="#6fa384"/></g>
+  </svg>
+  <i class="fcoin" style="--x:46%;--y:16%;--s:46px;--d:0s">€</i><i class="fcoin" style="--x:64%;--y:34%;--s:34px;--d:-1.4s">€</i><i class="fcoin" style="--x:54%;--y:62%;--s:40px;--d:-2.6s">€</i><i class="fcoin" style="--x:90%;--y:22%;--s:38px;--d:-.8s">€</i><i class="fcoin" style="--x:4%;--y:78%;--s:32px;--d:-3.2s">€</i>
+  <div class="wrap"><div class="glass">
+    <div class="session">Séance interactive d'économie publique : taxe unitaire sur un marché concurrentiel</div>
+    <h1>Finance publique</h1>
+    <div class="sub">Incidence fiscale, élasticités et perte sèche</div>
+    <p class="obj">Objectif de la séance : comprendre qui supporte réellement une taxe, pourquoi cela dépend de la sensibilité relative de l'offre et de la demande au prix, et comment la taxe détruit une partie du surplus collectif.</p>
+    <div class="badges"><span class="badge">Équilibre partiel</span><span class="badge">Concurrence parfaite</span><span class="badge">Fonctions linéaires</span><span class="badge">Équilibre initial : P₀ = 20 €, Q₀ = 60</span></div>
+    <div class="cta"><a class="go" href="#simulateur">Ouvrir le simulateur</a><a class="alt" href="#cours">Lire le cours</a></div>
+  </div></div>
+  <div class="cast" aria-hidden="true"><div class="av" data-av="consumer"></div><div class="av big" data-av="state"></div><div class="av" data-av="producer"></div></div>
+</header>
 <nav aria-label="Navigation principale"><div class="wrap">
   <a href="#intro">Introduction</a><a href="#cours">Cours</a><a href="#simulateur">Simulateur</a><a href="#analyse">Analyse économique</a><a href="#experiences">Expériences</a><a href="#verification">Vérification des connaissances</a><a href="#reponses">Mes réponses</a><a href="#limites">Limites</a>
 </div></nav>
@@ -114,9 +213,9 @@ footer{text-align:center;color:#8a95a8;font-size:12px;padding:34px 20px 40px}
   <h2>Introduction</h2>
   <p class="muted">Trois idées à garder en tête avant de manipuler le simulateur.</p>
   <div class="grid3">
-    <div class="card"><h3>Le coin fiscal</h3><p>Une taxe unitaire t sépare le prix payé par l'acheteur du prix net reçu par le vendeur : P<sub>c</sub> = P<sub>p</sub> + t. Quel que soit le redevable légal, ce coin est identique.</p></div>
-    <div class="card"><h3>L'incidence</h3><p>La charge se répartit selon les sensibilités au prix. Le côté du marché qui s'adapte le moins facilement supporte la plus grande part de la taxe.</p></div>
-    <div class="card"><h3>La perte sèche</h3><p>La taxe réduit la quantité échangée. Les échanges mutuellement avantageux qui disparaissent forment un triangle de surplus perdu, sans contrepartie en recettes.</p></div>
+    <div class="card ic"><div class="av" data-av="state"></div><h3>Le coin fiscal</h3><p>Une taxe unitaire t sépare le prix payé par l'acheteur du prix net reçu par le vendeur : P<sub>c</sub> = P<sub>p</sub> + t. Quel que soit le redevable légal, ce coin est identique.</p></div>
+    <div class="card ic"><div class="pair"><div class="av" data-av="consumer" data-mood="sad"></div><div class="av" data-av="producer" data-mood="happy"></div></div><h3>L'incidence</h3><p>La charge se répartit selon les sensibilités au prix. Le côté du marché qui s'adapte le moins facilement supporte la plus grande part de la taxe.</p></div>
+    <div class="card ic"><div class="drops mini"><i class="drop" style="--i:0">€</i><i class="drop" style="--i:2">€</i><i class="drop" style="--i:4">€</i><i class="drop" style="--i:1">€</i><i class="drop" style="--i:3">€</i></div><h3>La perte sèche</h3><p>La taxe réduit la quantité échangée. Les échanges mutuellement avantageux qui disparaissent forment un triangle de surplus perdu, sans contrepartie en recettes.</p></div>
   </div>
 </section>
 
@@ -164,6 +263,21 @@ footer{text-align:center;color:#8a95a8;font-size:12px;padding:34px 20px 40px}
         <div id="chartBox"><svg id="chart" role="img" aria-label="Graphique de l'offre, de la demande et de la taxe"></svg><div id="tip" role="tooltip"></div></div>
         <div class="lecture" id="lecture" aria-live="polite"></div>
       </div>
+      <div class="card stage" id="stage">
+        <div class="stage-head"><h3>La bascule de l'incidence</h3><span class="muted">Celui qui s'adapte le moins plie sous la taxe.</span></div>
+        <div class="stage-grid">
+          <div class="seesaw"><div class="beam" id="beam">
+            <div class="side"><div class="burden c" id="bC"></div><div class="av" data-av="consumer" id="avC" style="--w:112px"></div></div>
+            <div class="side"><div class="burden p" id="bP"></div><div class="av" data-av="producer" id="avP" style="--w:112px"></div></div>
+          </div><div class="pivot"></div></div>
+          <div class="treasury">
+            <div class="av" data-av="state" id="avS"></div>
+            <div class="vault"><b>Recettes fiscales</b> <span id="capV"></span><div class="coins" id="coins"></div></div>
+            <div class="leak"><b>Perte sèche</b> <span id="capL"></span><div class="drops" id="drops"></div></div>
+          </div>
+        </div>
+        <p class="say" id="say" aria-live="polite"></p>
+      </div>
       <div class="dash" aria-label="Tableau de bord économique">
         <div class="card m" style="--c:var(--blue)"><div class="l">Prix payé par les consommateurs (P<sub>c</sub>)</div><div class="n" id="pc"></div><div class="d" id="dpc"></div></div>
         <div class="card m" style="--c:var(--green)"><div class="l">Prix reçu par les producteurs (P<sub>p</sub>)</div><div class="n" id="pp"></div><div class="d" id="dpp"></div></div>
@@ -201,16 +315,17 @@ footer{text-align:center;color:#8a95a8;font-size:12px;padding:34px 20px 40px}
   <h2>Expériences</h2>
   <p class="muted">Chaque expérience règle les curseurs et vous ramène au simulateur. Formulez une prédiction avant de regarder le résultat.</p>
   <div class="grid2">
-    <div class="card"><h3>Expérience A : demande peu sensible au prix</h3><p>t = 10 €, a = 1, b = 3. La demande réagit peu, l'offre réagit beaucoup. Qui supporte l'essentiel de la taxe ?</p><div class="btns"><button class="gold" data-p="10,1,3">Lancer l'expérience A</button></div></div>
-    <div class="card"><h3>Expérience B : offre peu sensible au prix</h3><p>t = 10 €, a = 3, b = 1. Les rôles sont inversés. Comparez la répartition avec l'expérience A.</p><div class="btns"><button class="gold" data-p="10,3,1">Lancer l'expérience B</button></div></div>
-    <div class="card"><h3>Expérience C : doubler la taxe</h3><p>Passez de t = 5 € à t = 10 € avec a = b = 2. Notez la perte sèche dans chaque cas.</p><div class="btns"><button data-p="5,2,2">t = 5 €</button><button class="gold" data-p="10,2,2">t = 10 €</button></div></div>
-    <div class="card"><h3>Expérience D : marché très sensible</h3><p>t = 10 €, a = 5, b = 5. Les deux côtés réagissent fortement : observez la quantité perdue.</p><div class="btns"><button class="gold" data-p="10,5,5">Lancer l'expérience D</button></div></div>
+    <div class="card"><div class="expav"><div class="av" data-av="consumer" data-mood="sad"></div><div class="bubble">« Je dois bien acheter, quel que soit le prix… »</div></div><h3>Expérience A : demande peu sensible au prix</h3><p>t = 10 €, a = 1, b = 3. La demande réagit peu, l'offre réagit beaucoup. Qui supporte l'essentiel de la taxe ?</p><div class="btns"><button class="gold" data-p="10,1,3">Lancer l'expérience A</button></div></div>
+    <div class="card"><div class="expav"><div class="av" data-av="producer" data-mood="sad"></div><div class="bubble">« Je ne peux pas produire moins du jour au lendemain ! »</div></div><h3>Expérience B : offre peu sensible au prix</h3><p>t = 10 €, a = 3, b = 1. Les rôles sont inversés. Comparez la répartition avec l'expérience A.</p><div class="btns"><button class="gold" data-p="10,3,1">Lancer l'expérience B</button></div></div>
+    <div class="card"><div class="expav"><div class="av" data-av="prof" data-mood="happy"></div><div class="bubble">« Pari : la perte sèche va-t-elle doubler ? »</div></div><h3>Expérience C : doubler la taxe</h3><p>Passez de t = 5 € à t = 10 € avec a = b = 2. Notez la perte sèche dans chaque cas.</p><div class="btns"><button data-p="5,2,2">t = 5 €</button><button class="gold" data-p="10,2,2">t = 10 €</button></div></div>
+    <div class="card"><div class="expav"><div class="av" data-av="state" data-mood="sad"></div><div class="bubble">« Les échanges fondent… et mes recettes avec. »</div></div><h3>Expérience D : marché très sensible</h3><p>t = 10 €, a = 5, b = 5. Les deux côtés réagissent fortement : observez la quantité perdue.</p><div class="btns"><button class="gold" data-p="10,5,5">Lancer l'expérience D</button></div></div>
   </div>
 </section>
 
 <section id="verification">
   <h2>Vérification des connaissances</h2>
   <p class="muted">Testez votre compréhension, puis vérifiez avec le simulateur.</p>
+  <div class="coach"><div class="av" data-av="prof" id="coachAv"></div><div class="bubble" id="coachSay" aria-live="polite">Fais ta prédiction, je regarde !</div></div>
   <div class="card" style="margin-top:16px">
     <div class="q"><label for="prediction"><b>Expérience A.</b> Avec une taxe de 10 €, a = 1 et b = 3, qui supportera la plus grande part de la taxe ?</label>
       <select id="prediction"><option value="">Choisissez une réponse…</option><option value="consumers">Les consommateurs</option><option value="producers">Les producteurs</option><option value="equal">Les deux à parts égales</option></select>
@@ -409,6 +524,7 @@ function renderNumbers(m) {
   $('equations').innerHTML = `Q<sub>D</sub> = 60 + ${fmt(m.a)}(20 − P<sub>c</sub>)<br>Q<sub>O</sub> = 60 + ${fmt(m.b)}(P<sub>p</sub> − 20)<br>P<sub>c</sub> = P<sub>p</sub> + ${fmt(m.t)}<br>Q<sub>t</sub> = 60 − ${fmt(m.a * m.b / (m.a + m.b))} × ${fmt(m.t)} = ${fmt(m.qt)}`;
   $('checks').innerHTML = Econ.checks(m).map(([txt, ok]) => `<li><span class="${ok ? 'ok' : 'ko'}">${ok ? '✓' : '✗'}</span> ${txt}</li>`).join('');
   $('lecture').textContent = lecture(m);
+  renderStage(m);
 }
 function animate() {                        // transition douce du graphique vers les valeurs cibles
   const k = reduced ? 1 : 0.4; let done = true;
@@ -431,6 +547,53 @@ $('presetA').addEventListener('click', () => setParams(10, 1, 3, true));
 document.querySelectorAll('[data-p]').forEach(btn => btn.addEventListener('click', () => { const [t, a, b] = btn.dataset.p.split(',').map(Number); setParams(t, a, b, true); }));
 new ResizeObserver(() => { if (tgt) draw(Econ.solve(cur.t, cur.a, cur.b)); }).observe($('chartBox'));
 
+/* --- Avatars flat (SVG générés) --- */
+const AVD={consumer:{skin:'#f3c9a5',hair:'#3a2a26',top:'#2c5a9e'},producer:{skin:'#c98f63',hair:'#2a2019',top:'#e8dec4'},state:{skin:'#ecbc94',hair:'#1d2943',top:'#0e1b33'},prof:{skin:'#f3c9a5',hair:'#9aa0ad',top:'#b08a2e'}};
+function avatar(k){
+  const d=AVD[k],s=d.skin,h=d.hair,t=d.top,sl=`<path d="M90 114Q104 120 100 134" stroke="${t}" stroke-width="12" fill="none" stroke-linecap="round"/><circle cx="100" cy="137" r="5.5" fill="${s}"/>`;
+  const back=k==='consumer'?`<path d="M31 58Q29 22 60 22Q91 22 89 58L91 88Q76 94 74 72L46 72Q44 94 29 88Z" fill="${h}"/>`:'';
+  const body=`<path d="M22 160Q22 110 60 108Q98 110 98 160Z" fill="${t}"/>`+{
+    consumer:`<path d="M50 108Q60 122 70 108Z" fill="${s}"/>`,
+    producer:`<path d="M42 124H78L84 160H36Z" fill="#3e7f61"/><path d="M47 112L50 124M73 112L70 124" stroke="#3e7f61" stroke-width="4" stroke-linecap="round"/>`,
+    state:`<path d="M47 108L60 128L73 108Z" fill="#fff"/><path d="M57 114H63L65 142L60 148L55 142Z" fill="#c9a23a"/>`,
+    prof:`<path d="M47 108L60 126L73 108Z" fill="#fff"/><path d="M60 126V160" stroke="#8a6a14" stroke-width="2"/>`}[k];
+  const hair={
+    consumer:`<path d="M33 52Q36 20 62 22Q88 24 87 52Q74 34 56 38Q42 38 33 52Z" fill="${h}"/>`,
+    producer:`<rect x="33" y="48" width="5" height="12" rx="2" fill="${h}"/><rect x="82" y="48" width="5" height="12" rx="2" fill="${h}"/><path d="M32 42Q34 16 60 16Q86 16 88 42Z" fill="#3e7f61"/><path d="M56 37H98Q100 43 94 43H56Z" fill="#2f6a50"/>`,
+    state:`<path d="M33 54Q33 22 62 22Q88 22 87 52Q72 38 48 42Q38 44 33 54Z" fill="${h}"/>`,
+    prof:`<path d="M33 54Q33 22 62 22Q88 22 87 52Q72 38 48 42Q38 44 33 54Z" fill="${h}"/><g fill="none" stroke="#2a2f3d" stroke-width="2.2"><circle cx="49" cy="57" r="8.5"/><circle cx="71" cy="57" r="8.5"/><path d="M57.5 57H62.5"/></g>`}[k];
+  const acc={
+    consumer:sl+`<path d="M93 139Q100 121 107 139" stroke="#7a5f14" stroke-width="2.6" fill="none"/><rect x="88" y="139" width="24" height="21" rx="3" fill="#e2b94a"/><text x="100" y="155" text-anchor="middle" font-size="13" font-weight="700" fill="#7a5f14">€</text>`,
+    producer:sl+`<rect x="84" y="141" width="32" height="19" rx="3" fill="#c98b4a"/><path d="M84 148H116M84 154H116" stroke="#a86f35"/><circle cx="92" cy="139" r="5" fill="#d65a3a"/><circle cx="102" cy="137" r="5.5" fill="#e8933a"/><circle cx="111" cy="140" r="4.5" fill="#d65a3a"/>`,
+    state:sl+`<path d="M88 140Q84 154 92 160H110Q118 154 112 140Q100 134 88 140Z" fill="#d8b552"/><path d="M92 140L90 133H110L108 140Z" fill="#b08a2e"/><text x="100" y="155" text-anchor="middle" font-size="13" font-weight="700" fill="#7a5f14">€</text>`,
+    prof:sl+`<rect x="86" y="139" width="26" height="20" rx="2" fill="#a4543f"/><rect x="86" y="139" width="5" height="20" fill="#7d3a29"/><path d="M96 147H108M96 152H105" stroke="#f6efd9" stroke-width="2"/>`}[k];
+  return `<svg viewBox="0 0 120 160" aria-hidden="true">${back}<rect x="52" y="82" width="16" height="30" fill="${s}"/>${body}<circle cx="33" cy="58" r="5" fill="${s}"/><circle cx="87" cy="58" r="5" fill="${s}"/><circle cx="60" cy="56" r="27" fill="${s}"/><circle cx="44" cy="65" r="4.5" fill="#f08a7a" opacity=".35"/><circle cx="76" cy="65" r="4.5" fill="#f08a7a" opacity=".35"/><ellipse class="eye" cx="49" cy="57" rx="3" ry="3.6" fill="#1b2438"/><ellipse class="eye" cx="71" cy="57" rx="3" ry="3.6" fill="#1b2438"/><path class="br bl" d="M43 48Q49 44 55 48" stroke="#1b2438" stroke-width="2.4" fill="none" stroke-linecap="round"/><path class="br brr" d="M65 48Q71 44 77 48" stroke="#1b2438" stroke-width="2.4" fill="none" stroke-linecap="round"/><path class="mh" d="M50 67Q60 79 70 67Z" fill="#fff" stroke="#1b2438" stroke-width="2" stroke-linejoin="round"/><path class="mn" d="M52 71H68" stroke="#1b2438" stroke-width="2.4" fill="none" stroke-linecap="round"/><path class="ms" d="M51 74Q60 65 69 74" stroke="#1b2438" stroke-width="2.4" fill="none" stroke-linecap="round"/>${hair}<path class="sweat" d="M91 36Q97 46 91 50Q85 46 91 36Z" fill="#8cc7ee"/>${acc}</svg>`;
+}
+document.querySelectorAll('[data-av]').forEach(e=>{e.innerHTML=avatar(e.dataset.av);e.style.setProperty('--d',(-Math.random()*3.5).toFixed(2)+'s');if(!e.dataset.mood)e.dataset.mood='happy';});
+
+/* --- Scène : bascule de l'incidence, recettes et perte sèche --- */
+const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+let lastCoins=-1,lastDrops=-1;
+const feel=(share,none)=>none?'happy':share>.6?'sad':share<.4?'happy':'neutral';
+function renderStage(m){
+  const none=m.t===0;
+  $('beam').style.setProperty('--tilt',(none?0:(m.sp-m.sc)*16).toFixed(1)+'deg');
+  const bc=$('bC'),bp=$('bP');
+  bc.style.setProperty('--s',none?.9:(.72+.7*m.sc).toFixed(2));bp.style.setProperty('--s',none?.9:(.72+.7*m.sp).toFixed(2));
+  bc.innerHTML='<b>Consommateurs</b><small>'+(none?'Aucune charge':eur(m.pc-P0)+' / unité · '+pct(m.sc*100))+'</small>';
+  bp.innerHTML='<b>Producteurs</b><small>'+(none?'Aucune charge':eur(P0-m.pp)+' / unité · '+pct(m.sp*100))+'</small>';
+  $('avC').dataset.mood=feel(m.sc,none);$('avP').dataset.mood=feel(m.sp,none);
+  $('avS').dataset.mood=none?'neutral':(m.dwl/m.rev>.35?'sad':'happy');
+  $('capV').textContent='· '+eur(m.rev);$('capL').textContent='· '+eur(m.dwl);
+  const nc=clamp(Math.round(m.rev/40),0,20),nd=clamp(Math.round(m.dwl/6),0,12);
+  if(nc!==lastCoins){lastCoins=nc;$('coins').innerHTML=Array.from({length:nc},(_,i)=>`<i class="coin" style="--i:${i}">€</i>`).join('');}
+  if(nd!==lastDrops){lastDrops=nd;$('drops').innerHTML=Array.from({length:nd},(_,i)=>`<i class="drop" style="--i:${i}">€</i>`).join('');}
+  $('say').textContent=none?'Sans taxe, tout le monde est content. Montez la taxe pour faire basculer la balance.'
+    :m.sc>m.sp+.01?`« Aïe ! Je ne peux pas renoncer à acheter : je supporte ${pct(m.sc*100)} de la taxe. » Le consommateur, côté le moins sensible au prix.`
+    :m.sp>m.sc+.01?`« Je ne peux pas ajuster ma production si vite : je supporte ${pct(m.sp*100)} de la taxe. » Le producteur, côté le moins sensible au prix.`
+    :'La balance reste à l\u2019équilibre : sensibilités comparables, la taxe se partage à parts égales.';
+}
+
 /* --- Vérification des connaissances --- */
 $('check').addEventListener('click', () => {
   const choice = $('prediction').value, reason = $('reason').value.trim(), box = $('feedback');
@@ -449,6 +612,18 @@ $('quiz').innerHTML = QUIZ.map((x, i) => `<div class="q" data-i="${i}"><b>${x.q}
 $('quiz').addEventListener('change', e => {
   const q = e.target.closest('.q'), x = QUIZ[+q.dataset.i], ok = +e.target.value === x.c, fb = q.querySelector('.fb');
   fb.style.display = 'block'; fb.className = 'fb ' + (ok ? 'good' : 'warn'); fb.textContent = (ok ? 'Exact. ' : 'Pas tout à fait. ') + x.e;
+});
+
+/* --- Coach : l'avatar réagit aux réponses --- */
+const coachEl=$('coachAv'),coachSay=$('coachSay');
+function coach(mood,txt){coachEl.dataset.mood=mood;coachSay.textContent=txt;coachEl.classList.remove('hop');void coachEl.offsetWidth;coachEl.classList.add('hop');}
+$('check').addEventListener('click',()=>{
+  if(!$('prediction').value)return coach('neutral','Choisis d\u2019abord une réponse, je t\u2019attends.');
+  $('feedback').className.includes('good')?coach('happy','Bravo, bien vu ! Va vérifier avec les curseurs.'):coach('sad','Pas tout à fait… regarde quel côté est le moins sensible au prix.');
+});
+$('quiz').addEventListener('change',e=>{
+  const fb=e.target.closest('.q').querySelector('.fb');
+  fb.className.includes('good')?coach('happy','Exact, tu as saisi le mécanisme !'):coach('sad','Relis l\u2019explication, tu y es presque.');
 });
 
 /* --- Navigation active --- */
